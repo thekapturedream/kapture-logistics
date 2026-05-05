@@ -78,12 +78,12 @@ export function Hero() {
             transition={{ duration: 0.6, delay: 0.05 }}
             className="mt-6 font-display text-hero-xl text-balance text-white"
           >
-            Move anything,{" "}
+            Move a load{" "}
             <span className="relative inline-block">
-              anywhere
+              today
               <span className="absolute -bottom-1 left-0 h-2 w-full -skew-x-6 bg-kapture-yellow" aria-hidden />
-            </span>
-            .
+            </span>{" "}
+            with Kapture.
           </motion.h1>
         </div>
 

@@ -7,19 +7,22 @@ import { CalendlyEmbed } from "./CalendlyEmbed";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
+// Kapture Studio solutions — the parent agency's real menu of services.
+// Even though this lives on the Logistics demo, every contact submission
+// routes back to Kapture as a lead, so the topics reflect what Kapture
+// actually sells across web, brand, audit, education, and partnership work.
 const TOPICS = [
-  { value: "general", label: "General enquiry" },
-  { value: "managed", label: "Managed Transportation" },
-  { value: "multimodal", label: "Multi-modal capacity" },
-  { value: "lastmile", label: "Last-mile delivery" },
-  { value: "supply-chain", label: "Supply Chain" },
-  { value: "customs", label: "Customs & Trade" },
-  { value: "platform", label: "Platform / API" },
-  { value: "carrier", label: "Become a carrier" },
-  { value: "partner", label: "Partnerships" },
-  { value: "press", label: "Press" },
-  { value: "careers", label: "Careers" },
-  { value: "tracking", label: "Track a shipment" },
+  { value: "general",        label: "General enquiry" },
+  { value: "web-build",      label: "Build my website" },
+  { value: "brand-identity", label: "Brand identity & design" },
+  { value: "brand-audit",    label: "Brand audit · Kurongeka" },
+  { value: "templates",      label: "Templates & stock assets" },
+  { value: "courses",        label: "Courses & training" },
+  { value: "workshops",      label: "Workshops & live events" },
+  { value: "consulting",     label: "Strategic consulting" },
+  { value: "partnership",    label: "Partnership / collaboration" },
+  { value: "press",          label: "Press" },
+  { value: "careers",        label: "Careers" },
 ];
 
 export function ContactForm({ topic = "general" }: { topic?: string }) {

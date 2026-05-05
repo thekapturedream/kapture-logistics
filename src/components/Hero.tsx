@@ -170,19 +170,16 @@ export function Hero() {
               "max-sm:fixed max-sm:inset-x-0 max-sm:bottom-0 max-sm:z-50 max-sm:m-0 max-sm:max-h-[88vh] max-sm:max-w-none max-sm:overflow-y-auto max-sm:rounded-b-none max-sm:border-x-0 max-sm:border-b-0 max-sm:pb-[max(1rem,env(safe-area-inset-bottom))]",
           )}
         >
-          {/* Close button — mobile, expanded only */}
-          {expanded && (
-            <button
-              type="button"
-              onClick={closeForm}
-              aria-label="Close form"
-              className="absolute right-3 top-3 z-10 inline-flex h-8 w-8 items-center justify-center rounded-full bg-kapture-paper text-kapture-black transition-colors hover:bg-kapture-fog sm:hidden dark:bg-kapture-ash dark:text-kapture-white dark:hover:bg-kapture-coal"
-            >
-              <X size={14} />
-            </button>
-          )}
-          {/* Mode tabs — 4 in one row on mobile (grid), inline on tablet+ */}
-          <div className="grid grid-cols-4 gap-1 px-1 pb-3 pt-1 sm:flex sm:flex-wrap sm:items-center sm:px-2">
+          {/* Mode tabs — single-row grid on mobile.
+              4 tabs by default, 5 cols when expanded so the close-X sits as
+              its own cell at the right (no overlap). Tablet+ uses inline flex
+              and never renders the X button. */}
+          <div
+            className={cn(
+              "grid gap-1 px-1 pb-3 pt-1 sm:flex sm:flex-wrap sm:items-center sm:px-2",
+              expanded ? "grid-cols-5" : "grid-cols-4",
+            )}
+          >
             {MODES.map((m) => (
               <button
                 key={m.id}
@@ -202,6 +199,20 @@ export function Hero() {
                 {m.label}
               </button>
             ))}
+
+            {/* Close — fifth column on mobile when expanded. Hidden on tablet+. */}
+            {expanded && (
+              <button
+                type="button"
+                onClick={closeForm}
+                aria-label="Close form"
+                className="flex items-center justify-end sm:hidden"
+              >
+                <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-kapture-paper text-kapture-black transition-colors hover:bg-kapture-fog dark:bg-kapture-ash dark:text-kapture-white dark:hover:bg-kapture-coal">
+                  <X size={14} />
+                </span>
+              </button>
+            )}
           </div>
 
           {/* Field grid — pickup is always visible; the rest reveal on expand */}

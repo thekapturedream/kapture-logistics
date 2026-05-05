@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { PageHeader } from "@/components/PageHeader";
 import { QuoteForm } from "@/components/QuoteForm";
+import { ScrollToFormButton } from "@/components/ScrollToFormButton";
 import {
   Check,
   Layers,
@@ -76,7 +77,9 @@ export default function QuotePage() {
         eyebrow="A heads-up before you continue"
         title="Ship your website today with Kapture."
         lede="What you're looking at is a Kapture website template — fully built, ready to be branded for your business. Fill in the short form below, then pick a 15-minute meeting slot. We talk, agree the brief, and your site goes live."
-      />
+      >
+        <ScrollToFormButton />
+      </PageHeader>
 
       {/* How it works — plain English, four steps */}
       <section className="border-b border-kapture-fog/60 dark:border-kapture-ash">
@@ -104,7 +107,7 @@ export default function QuotePage() {
       </section>
 
       {/* Form + features sidebar */}
-      <section className="container-kapture py-16 md:py-20">
+      <section id="onboarding-form" className="scroll-mt-20 container-kapture py-16 md:py-20">
         <div className="grid gap-12 lg:grid-cols-12">
           <div className="lg:col-span-7">
             <QuoteForm />

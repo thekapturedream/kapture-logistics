@@ -131,27 +131,27 @@ export function Navbar() {
  * Theme toggle that adapts to whether the navbar is currently over the
  * dark hero (light foreground) or sitting on a normal page (themed).
  */
-function ThemeToggleInline({ overHero }: { overHero: boolean }) {
+function ThemeToggleInline({ overHero: _overHero }: { overHero: boolean }) {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
   React.useEffect(() => setMounted(true), []);
   const isDark = mounted && (theme === "dark" || resolvedTheme === "dark");
 
-  const cls = overHero
-    ? "border-white/20 text-white hover:bg-white hover:text-kapture-black"
-    : "border-kapture-fog text-kapture-black hover:bg-kapture-black hover:text-kapture-white dark:border-kapture-ash dark:text-kapture-white dark:hover:bg-kapture-white dark:hover:text-kapture-black";
-
+  // Always Kapture yellow with black icon — the only persistently yellow chip
+  // in the navbar so it always reads as "the action you can take here."
+  // Hover darkens to amber. Same treatment over the hero video, over light
+  // mode, and over dark mode — the toggle stands out everywhere.
   return (
     <button
       type="button"
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      className={cn("inline-flex h-10 w-10 items-center justify-center rounded-full border transition-all", cls)}
+      className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-kapture-yellow text-kapture-black shadow-kapture-yellow transition-all hover:bg-kapture-amber"
     >
       {mounted ? (
         isDark ? <Sun size={16} /> : <Moon size={16} />
       ) : (
-        <span className="block h-4 w-4 rounded-full bg-current opacity-30" />
+        <span className="block h-4 w-4 rounded-full bg-kapture-black/20" />
       )}
     </button>
   );

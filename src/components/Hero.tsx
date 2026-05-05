@@ -3,15 +3,15 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { ArrowRight, ChevronDown, MapPin, PackageSearch, Truck, Plane, Ship, Navigation } from "lucide-react";
+import { ArrowRight, MapPin, PackageSearch, Truck, Plane, Ship, Navigation } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Mode = "road" | "air" | "sea" | "express";
 
 const MODES: { id: Mode; label: string; icon: React.ReactNode }[] = [
-  { id: "road", label: "Road", icon: <Truck size={14} /> },
-  { id: "air", label: "Air", icon: <Plane size={14} /> },
-  { id: "sea", label: "Sea", icon: <Ship size={14} /> },
+  { id: "road",    label: "Road",    icon: <Truck size={14} /> },
+  { id: "air",     label: "Air",     icon: <Plane size={14} /> },
+  { id: "sea",     label: "Sea",     icon: <Ship size={14} /> },
   { id: "express", label: "Express", icon: <Navigation size={14} /> },
 ];
 
@@ -28,9 +28,9 @@ export function Hero() {
   const [origin, setOrigin] = React.useState("");
   const [destination, setDestination] = React.useState("");
   const [cargo, setCargo] = React.useState("Pallet");
-  // Mobile-only: form starts collapsed (tabs + pickup field) so the hero
-  // video has room to breathe on first load. Any interaction expands it.
-  // Tablet and up never collapse — the form is always full-size.
+  // Mobile-only collapse: starts with tabs + pickup field only.
+  // Any interaction (tab click or pickup focus) expands the form upward.
+  // Tablet and up always render expanded — flag is ignored beyond `sm:`.
   const [expanded, setExpanded] = React.useState(false);
   const expand = () => setExpanded(true);
 
@@ -65,7 +65,16 @@ export function Hero() {
         className="absolute inset-0 -z-10 bg-gradient-to-b from-black/40 via-transparent to-black/45"
       />
 
-      <div className="container-kapture relative pb-24 pt-24 md:pt-32 lg:pt-40">
+      {/*
+        Mobile-first vertical layout:
+          - section is min-h-screen on mobile (svh works around mobile chrome)
+          - badge + headline anchor to the top with pt-24
+          - flex-grow spacer pushes the form into the bottom third
+          - form + stats live at the bottom with pb-8
+        Tablet+ reverts to the original block layout via sm: overrides so the
+        existing centred composition is untouched.
+      */}
+      <div className="container-kapture relative flex min-h-[100svh] flex-col pb-8 pt-24 sm:block sm:min-h-0 sm:pb-24 md:pt-32 lg:pt-40">
         <div className="mx-auto max-w-4xl text-center">
           <motion.div
             initial={{ opacity: 0, y: 8 }}
@@ -84,25 +93,27 @@ export function Hero() {
             className="mt-6 font-display text-hero-xl text-balance text-white"
           >
             Move a load{" "}
-            <span className="relative inline-block">
+            <span className="relative inline-block pb-1">
               today
-              <span className="absolute -bottom-1 left-0 h-2 w-full -skew-x-6 bg-kapture-yellow" aria-hidden />
+              <span className="absolute -bottom-0 left-0 h-1.5 w-full -skew-x-6 bg-kapture-yellow" aria-hidden />
             </span>{" "}
             with Kapture.
           </motion.h1>
         </div>
 
-        {/* Freight calculator — looks like a real logistics quote desk.
-            Submission flows to /quote, where it captures full freight details
-            and converts the lead through a Kapture appointment-booking step. */}
+        {/* Mobile-only spacer: pushes the form into the bottom third */}
+        <div className="grow sm:hidden" />
+
+        {/* Quote calculator. Submission flows to /quote. */}
         <motion.form
           onSubmit={handleSubmit}
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.15 }}
-          className="mx-auto mt-12 max-w-4xl rounded-2xl border border-white/10 bg-white/95 p-3 shadow-2xl backdrop-blur-md dark:bg-kapture-ink/95 md:p-4"
+          className="mx-auto mt-6 w-full max-w-4xl rounded-2xl border border-white/10 bg-white/95 p-3 shadow-2xl backdrop-blur-md sm:mt-12 dark:bg-kapture-ink/95 md:p-4"
         >
-          <div className="flex flex-wrap items-center gap-1 px-2 pb-3 pt-1">
+          {/* Mode tabs — 4 in one row on mobile (grid), inline on tablet+ */}
+          <div className="grid grid-cols-4 gap-1 px-1 pb-3 pt-1 sm:flex sm:flex-wrap sm:items-center sm:px-2">
             {MODES.map((m) => (
               <button
                 key={m.id}
@@ -112,18 +123,19 @@ export function Hero() {
                   expand();
                 }}
                 className={cn(
-                  "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-all",
+                  "flex items-center justify-center gap-1.5 rounded-full px-2 py-1.5 text-xs font-semibold transition-all sm:px-3",
                   mode === m.id
                     ? "bg-kapture-black text-kapture-white dark:bg-kapture-white dark:text-kapture-black"
                     : "text-kapture-smoke hover:bg-kapture-paper dark:text-kapture-fog dark:hover:bg-kapture-coal",
                 )}
               >
-                {m.icon}
+                <span className="hidden sm:inline-flex">{m.icon}</span>
                 {m.label}
               </button>
             ))}
           </div>
 
+          {/* Field grid — pickup is always visible; the rest reveal on expand */}
           <div className="grid gap-2 md:grid-cols-[1fr,1fr,auto,auto]">
             <label className="relative">
               <span className="sr-only">Pickup location</span>
@@ -179,18 +191,7 @@ export function Hero() {
             </button>
           </div>
 
-          {/* Mobile-only collapse hint — taps to expand the form */}
-          {!expanded && (
-            <button
-              type="button"
-              onClick={expand}
-              className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-kapture px-3 py-2 text-xs font-semibold uppercase tracking-wider text-kapture-mist transition-colors hover:text-kapture-black sm:hidden dark:hover:text-kapture-white"
-            >
-              Tap for full quote
-              <ChevronDown size={12} />
-            </button>
-          )}
-
+          {/* Popular lanes — hidden on collapsed mobile */}
           <div className={cn("flex flex-wrap items-center gap-2 px-2 pb-1 pt-3", !expanded && "max-sm:hidden")}>
             <span className="text-[11px] uppercase tracking-wider text-kapture-mist">
               Popular lanes
@@ -218,7 +219,7 @@ export function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="mx-auto mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-white/70"
+          className="mx-auto mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-white/70 sm:mt-8"
         >
           <span className="inline-flex items-center gap-1.5">
             <span className="relative flex h-2 w-2">

@@ -89,7 +89,7 @@ export default function RootLayout({
       className={`${sans.variable} ${display.variable} ${mono.variable}`}
     >
       <body className="min-h-screen bg-white font-sans text-kapture-black antialiased dark:bg-kapture-black dark:text-kapture-white">
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="dark">
           <Navbar />
           <main className="min-h-[calc(100vh-4rem)] pt-16">{children}</main>
           <Footer />

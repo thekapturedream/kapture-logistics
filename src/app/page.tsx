@@ -3,6 +3,7 @@ import { CityMarquee } from "@/components/CityMarquee";
 import { ValueProp } from "@/components/ValueProp";
 import { Stats } from "@/components/Stats";
 import { BentoServices } from "@/components/BentoServices";
+import { OnTheGround } from "@/components/OnTheGround";
 import { SolutionsGrid } from "@/components/SolutionsGrid";
 import { HowItWorks } from "@/components/HowItWorks";
 import { CTA } from "@/components/CTA";
@@ -15,6 +16,7 @@ export default function HomePage() {
       <ValueProp />
       <BentoServices />
       <Stats />
+      <OnTheGround />
       <SolutionsGrid />
       <HowItWorks />
       <CTA />

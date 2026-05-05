@@ -56,7 +56,7 @@ export default function ContactPage({ searchParams }: Props) {
                   <li className="flex items-start gap-3">
                     <MapPin size={16} className="mt-0.5 text-kapture-yellow" />
                     <span className="text-kapture-smoke dark:text-kapture-fog">
-                      Midrand · Harare · Lusaka · Ndola
+                      {SITE.cities.join(" · ")}
                     </span>
                   </li>
                 </ul>

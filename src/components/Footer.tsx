@@ -52,9 +52,13 @@ export function Footer() {
       <div className="container-kapture py-20">
         <div className="grid gap-12 lg:grid-cols-12">
           <div className="lg:col-span-4">
-            <Link href="/" className="inline-flex items-center gap-2 font-display text-lg font-bold">
-              <KaptureSun size={28} className="text-kapture-black dark:text-kapture-yellow" />
-              Kapture<span className="text-kapture-mist">·</span>Logistics
+            <Link href="/" className="inline-flex items-center gap-3 font-display text-lg lowercase tracking-wide">
+              <KaptureSun size={28} className="text-kapture-black dark:text-kapture-white" />
+              <span className="flex items-center gap-2">
+                <span className="font-semibold">kapture</span>
+                <span className="text-kapture-mist">·</span>
+                <span className="font-medium">logistics</span>
+              </span>
             </Link>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-kapture-smoke dark:text-kapture-fog">
               A Kapture company. We unify managed transportation, multi-modal capacity, and
@@ -79,7 +83,7 @@ export function Footer() {
               </a>
               <div className="flex items-center gap-3 text-kapture-smoke dark:text-kapture-fog">
                 <MapPin size={14} />
-                Midrand · Harare · Lusaka · Ndola
+                {SITE.cities.join(" · ")}
               </div>
             </div>
 

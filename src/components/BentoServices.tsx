@@ -129,7 +129,7 @@ export function BentoServices() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.5, delay: idx * 0.04 }}
-              className={`${cardClass} ${s.span}`}
+              className={`group ${cardClass} ${s.span}`}
             >
               <div className="flex h-full flex-col justify-between gap-6">
                 <div>

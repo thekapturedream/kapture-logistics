@@ -82,15 +82,15 @@ body {
   }
 
   .bento-card {
-    @apply group relative overflow-hidden rounded-2xl border bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-kapture-lift dark:bg-kapture-ink md:p-8;
+    @apply relative overflow-hidden rounded-2xl border bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-kapture-lift dark:bg-kapture-ink md:p-8;
   }
 
   .bento-card-dark {
-    @apply group relative overflow-hidden rounded-2xl border border-kapture-ash bg-kapture-black p-6 text-kapture-white transition-all duration-300 hover:-translate-y-1 md:p-8;
+    @apply relative overflow-hidden rounded-2xl border border-kapture-ash bg-kapture-black p-6 text-kapture-white transition-all duration-300 hover:-translate-y-1 md:p-8;
   }
 
   .bento-card-yellow {
-    @apply group relative overflow-hidden rounded-2xl bg-kapture-yellow p-6 text-kapture-black transition-all duration-300 hover:-translate-y-1 hover:shadow-kapture-lift md:p-8;
+    @apply relative overflow-hidden rounded-2xl bg-kapture-yellow p-6 text-kapture-black transition-all duration-300 hover:-translate-y-1 hover:shadow-kapture-lift md:p-8;
   }
 
   .grid-bg {

@@ -36,7 +36,10 @@ export function Hero() {
   }
 
   return (
-    <section className="relative isolate -mt-16 overflow-hidden">
+    <section className="relative isolate -mt-16 overflow-hidden bg-kapture-black">
+      {/* Solid black underlay — guarantees pure black until video has frames */}
+      <div className="absolute inset-0 -z-30 bg-kapture-black" aria-hidden="true" />
+
       {/* Video background */}
       <video
         autoPlay
@@ -44,8 +47,8 @@ export function Hero() {
         loop
         playsInline
         preload="auto"
-        poster="/kapture-sun.svg"
-        className="absolute inset-0 -z-20 h-full w-full object-cover"
+        poster="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%201%201%27%3E%3Crect%20width%3D%271%27%20height%3D%271%27%20fill%3D%27%230A0A0A%27%2F%3E%3C%2Fsvg%3E"
+        className="absolute inset-0 -z-20 h-full w-full bg-kapture-black object-cover"
         aria-hidden="true"
       >
         <source src="/hero-bg.mp4" type="video/mp4" />

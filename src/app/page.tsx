@@ -1,5 +1,6 @@
 import { Hero } from "@/components/Hero";
 import { CityMarquee } from "@/components/CityMarquee";
+import { TemplateForSale } from "@/components/TemplateForSale";
 import { ValueProp } from "@/components/ValueProp";
 import { Stats } from "@/components/Stats";
 import { BentoServices } from "@/components/BentoServices";
@@ -12,6 +13,7 @@ export default function HomePage() {
     <>
       <Hero />
       <CityMarquee />
+      <TemplateForSale />
       <ValueProp />
       <BentoServices />
       <Stats />

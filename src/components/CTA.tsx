@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { KaptureSun } from "./KaptureSun";
+import { SITE } from "@/lib/utils";
 
 export function CTA() {
   return (
@@ -15,31 +16,33 @@ export function CTA() {
         <div className="relative max-w-2xl">
           <p className="chip border-kapture-ash text-kapture-fog">
             <span className="divider-dot" />
-            Ready when you are
+            Final move
           </p>
           <h2 className="mt-5 font-display text-hero-lg text-balance">
-            Ship your website. We'll handle the rest of the world.
+            Make this website yours.
           </h2>
-          <p className="lede mt-5 text-kapture-fog">
-            Punch in your endpoints. We design the lane, price it, and move the goods.
+          <p className="mt-5 text-base text-kapture-fog md:text-lg">
+            Punch in your endpoints. We'll handle the world in between. {SITE.template.priceFromLabel},
+            live in {SITE.template.deliveryHours} hours, branded for you, by Kapture Studio.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              href="/quote"
-              className="btn-yellow"
-            >
-              Get a quote in 30 seconds
+            <Link href="/quote?intent=template" className="btn-yellow">
+              Make it yours — {SITE.template.price}
               <ArrowUpRight size={16} />
             </Link>
             <Link
-              href="/contact?topic=enterprise"
+              href="/quote?intent=custom"
               className="btn-kapture border border-kapture-ash bg-transparent text-kapture-white hover:bg-kapture-white hover:text-kapture-black"
             >
-              Talk to enterprise
+              Custom build · {SITE.template.customBuildPriceLabel}
               <ArrowUpRight size={16} />
             </Link>
           </div>
+
+          <p className="mt-6 text-xs uppercase tracking-wider text-kapture-mist">
+            Designed and built by {SITE.studio} · {SITE.email}
+          </p>
         </div>
       </div>
     </section>

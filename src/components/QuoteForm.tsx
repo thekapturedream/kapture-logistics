@@ -3,22 +3,57 @@
 import * as React from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle2, AlertTriangle } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
 type Props = {
   defaults?: {
-    mode?: string;
-    origin?: string;
-    destination?: string;
-    cargo?: string;
-    service?: string;
+    business?: string;
+    industry?: string;
+    timeline?: string;
+    intent?: string;
   };
 };
+
+const INTENTS = [
+  { id: "template", label: "Buy this template",  body: "Branded for me, deployed to my domain, repo handed over." },
+  { id: "custom",   label: "Custom build",       body: "Bespoke site, designed from scratch, longer engagement." },
+];
+
+const INDUSTRIES = [
+  "Logistics & Freight",
+  "Retail & E-commerce",
+  "Manufacturing",
+  "Mining & Energy",
+  "Healthcare",
+  "Agriculture",
+  "Tech & SaaS",
+  "Financial Services",
+  "Hospitality",
+  "Government / Public",
+  "Other",
+];
+
+const TIMELINES = [
+  "ASAP — within 24 hours",
+  "This week",
+  "This month",
+  "Next quarter",
+  "Just exploring",
+];
+
+const BUDGETS = [
+  "£2,500 — template only",
+  "£2,500–£8,500 — template + customisation",
+  "£8,500+ — custom build",
+  "Not sure yet, advise me",
+];
 
 export function QuoteForm({ defaults }: Props) {
   const [status, setStatus] = React.useState<Status>("idle");
   const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
+  const [intent, setIntent] = React.useState(defaults?.intent === "custom" ? "custom" : "template");
   const formRef = React.useRef<HTMLFormElement>(null);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -33,7 +68,7 @@ export function QuoteForm({ defaults }: Props) {
       const res = await fetch("/api/lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...payload, type: "quote", source: "quote-page" }),
+        body: JSON.stringify({ ...payload, type: "quote", source: "kapture-onboarding" }),
       });
 
       if (!res.ok) {
@@ -58,11 +93,11 @@ export function QuoteForm({ defaults }: Props) {
       >
         <CheckCircle2 className="text-kapture-amber" size={28} />
         <h3 className="mt-4 font-display text-2xl font-bold">
-          Quote request received.
+          Brief received. Kapture is on it.
         </h3>
         <p className="mt-2 text-sm text-kapture-smoke dark:text-kapture-fog">
-          A Kapture strategist will be in touch within the next business hour with a costed plan
-          and lane options. Watch your inbox.
+          A Kapture Studio operator will reach out within the business hour with pricing, scope,
+          and the next steps to get your site live in 24 hours.
         </p>
         <button
           type="button"
@@ -81,66 +116,81 @@ export function QuoteForm({ defaults }: Props) {
       onSubmit={onSubmit}
       className="rounded-2xl border bg-white p-6 shadow-kapture-soft dark:border-kapture-ash dark:bg-kapture-coal md:p-8"
     >
-      <div className="grid gap-5 md:grid-cols-2">
-        <Field label="Full name" name="name" required defaultValue="" />
-        <Field label="Work email" name="email" type="email" required />
-        <Field label="Company" name="company" />
+      {/* Intent toggle */}
+      <p className="label">What do you want?</p>
+      <div className="grid gap-3 md:grid-cols-2">
+        {INTENTS.map((opt) => {
+          const active = intent === opt.id;
+          return (
+            <button
+              type="button"
+              key={opt.id}
+              onClick={() => setIntent(opt.id)}
+              className={cn(
+                "rounded-xl border p-4 text-left transition-all",
+                active
+                  ? "border-kapture-black bg-kapture-black text-kapture-white dark:border-kapture-white dark:bg-kapture-white dark:text-kapture-black"
+                  : "hover:border-kapture-black dark:hover:border-kapture-white",
+              )}
+            >
+              <p className="text-sm font-bold">{opt.label}</p>
+              <p className={cn("mt-1 text-xs leading-relaxed", active ? "text-white/75 dark:text-kapture-black/75" : "text-kapture-smoke dark:text-kapture-fog")}>
+                {opt.body}
+              </p>
+            </button>
+          );
+        })}
+      </div>
+      <input type="hidden" name="intent" value={intent} />
+
+      <div className="mt-6 grid gap-5 md:grid-cols-2">
+        <Field label="Business name *" name="business" required defaultValue={defaults?.business} />
+        <Field label="Your name *" name="name" required />
+        <Field label="Work email *" name="email" type="email" required />
         <Field label="Phone" name="phone" type="tel" />
-        <Field label="Pickup location" name="origin" required defaultValue={defaults?.origin} />
-        <Field label="Drop-off location" name="destination" required defaultValue={defaults?.destination} />
 
         <label>
-          <span className="label">Mode</span>
-          <select className="field" name="mode" defaultValue={defaults?.mode || "road"}>
-            <option value="road">Road</option>
-            <option value="air">Air</option>
-            <option value="sea">Sea</option>
-            <option value="express">Express</option>
-            <option value="multi">Multi-modal</option>
+          <span className="label">Industry</span>
+          <select className="field" name="industry" defaultValue={defaults?.industry || INDUSTRIES[0]}>
+            {INDUSTRIES.map((i) => <option key={i}>{i}</option>)}
           </select>
         </label>
 
         <label>
-          <span className="label">Cargo type</span>
-          <select className="field" name="cargo_type" defaultValue={defaults?.cargo || "Pallet"}>
-            <option>Pallet</option>
-            <option>Container (20ft)</option>
-            <option>Container (40ft)</option>
-            <option>Bulk</option>
-            <option>Refrigerated</option>
-            <option>Oversize</option>
-            <option>Documents</option>
+          <span className="label">Launch timeline</span>
+          <select className="field" name="timeline" defaultValue={defaults?.timeline || TIMELINES[0]}>
+            {TIMELINES.map((t) => <option key={t}>{t}</option>)}
           </select>
         </label>
 
-        <Field label="Estimated weight (kg)" name="weight_kg" type="number" placeholder="e.g. 1200" />
-        <Field label="Pickup date" name="pickup_date" type="date" />
+        <label className="md:col-span-2">
+          <span className="label">Budget signal</span>
+          <select className="field" name="budget" defaultValue={BUDGETS[0]}>
+            {BUDGETS.map((b) => <option key={b}>{b}</option>)}
+          </select>
+        </label>
       </div>
 
       <label className="mt-5 block">
-        <span className="label">Tell us more (optional)</span>
+        <span className="label">Anything else? (domains, integrations, deadlines)</span>
         <textarea
           name="message"
           rows={4}
           className="field"
-          placeholder="Special handling, deadlines, customs notes, anything else useful."
+          placeholder="e.g. point at this domain, integrate with HubSpot, replace the freight calculator with X"
         />
       </label>
 
-      {defaults?.service && (
-        <input type="hidden" name="service" value={defaults.service} />
-      )}
-
       <div className="mt-6 flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
         <p className="text-xs text-kapture-mist">
-          By submitting you agree to be contacted by Kapture. We never share your data.
+          By submitting you agree to be contacted by Kapture Studio.
         </p>
         <button
           type="submit"
           disabled={status === "submitting"}
-          className="btn-primary disabled:opacity-60"
+          className="btn-yellow text-base font-bold disabled:opacity-60"
         >
-          {status === "submitting" ? "Sending…" : "Get my prices"}
+          {status === "submitting" ? "Sending…" : intent === "template" ? "See template pricing" : "Brief Kapture for a custom build"}
           <ArrowRight size={16} />
         </button>
       </div>
@@ -172,10 +222,7 @@ function Field({
 }) {
   return (
     <label>
-      <span className="label">
-        {label}
-        {required && <span className="ml-1 text-kapture-yellow">*</span>}
-      </span>
+      <span className="label">{label}</span>
       <input
         type={type}
         name={name}

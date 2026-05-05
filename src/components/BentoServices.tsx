@@ -12,19 +12,22 @@ import {
   Ship,
   Plane,
   Radar,
+  type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Tone = "light" | "dark" | "yellow";
 
-const SERVICES: {
+type Service = {
   id: string;
-  icon: React.ComponentType<{ size?: number; className?: string; strokeWidth?: number }>;
+  icon: LucideIcon;
   title: string;
   body: string;
   href: string;
   tone: Tone;
-}[] = [
+};
+
+const SERVICES: Service[] = [
   { id: "managed",      icon: Layers,       title: "Managed Transport", body: "One control tower. Pricing, routing, exceptions — handled.",         href: "/services#managed",      tone: "dark"   },
   { id: "multimodal",   icon: Truck,        title: "Multi-modal",       body: "Road, rail, air, sea — surge capacity across modes.",                href: "/services#multimodal",   tone: "light"  },
   { id: "lastmile",     icon: PackageCheck, title: "Last-mile",         body: "From port to porch. Same-day metro, scheduled rural.",               href: "/services#lastmile",     tone: "yellow" },

@@ -3,6 +3,7 @@ import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { TemplateBanner } from "@/components/TemplateBanner";
 import { SITE } from "@/lib/utils";
 import "./globals.css";
 
@@ -90,6 +91,7 @@ export default function RootLayout({
     >
       <body className="min-h-screen bg-white font-sans text-kapture-black antialiased dark:bg-kapture-black dark:text-kapture-white">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+          <TemplateBanner />
           <Navbar />
           <main className="min-h-[calc(100vh-4rem)] pt-16">{children}</main>
           <Footer />

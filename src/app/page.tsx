@@ -1,5 +1,6 @@
 import { Hero } from "@/components/Hero";
-import { LogoMarquee } from "@/components/LogoMarquee";
+import { CityMarquee } from "@/components/CityMarquee";
+import { ValueProp } from "@/components/ValueProp";
 import { Stats } from "@/components/Stats";
 import { BentoServices } from "@/components/BentoServices";
 import { SolutionsGrid } from "@/components/SolutionsGrid";
@@ -10,9 +11,10 @@ export default function HomePage() {
   return (
     <>
       <Hero />
-      <LogoMarquee />
-      <Stats />
+      <CityMarquee />
+      <ValueProp />
       <BentoServices />
+      <Stats />
       <SolutionsGrid />
       <HowItWorks />
       <CTA />

@@ -25,10 +25,21 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Over the video hero (top of home), text is white. Once scrolled, normal palette.
+  const linkBase = scrolled
+    ? "text-kapture-smoke hover:bg-kapture-paper hover:text-kapture-black dark:text-kapture-fog dark:hover:bg-kapture-ink dark:hover:text-kapture-white"
+    : "text-white/80 hover:bg-white/10 hover:text-white";
+
+  const brandText = scrolled ? "" : "text-white";
+  const sunColor = scrolled ? "text-kapture-black dark:text-kapture-yellow" : "text-kapture-yellow";
+  const iconBtn = scrolled
+    ? "border-kapture-fog text-kapture-black hover:bg-kapture-black hover:text-kapture-white dark:border-kapture-ash dark:text-kapture-white dark:hover:bg-kapture-white dark:hover:text-kapture-black"
+    : "border-white/20 text-white hover:bg-white hover:text-kapture-black";
+
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 w-full border-b border-transparent backdrop-blur transition-all",
+        "fixed top-0 z-50 w-full border-b border-transparent backdrop-blur transition-all",
         scrolled &&
           "border-kapture-fog/60 bg-white/80 dark:border-kapture-ash dark:bg-kapture-black/80",
       )}
@@ -36,12 +47,12 @@ export function Navbar() {
       <div className="container-kapture flex h-16 items-center justify-between">
         <Link
           href="/"
-          className="flex items-center gap-2 font-display text-base font-bold tracking-tight"
+          className={cn("flex items-center gap-2 font-display text-base font-bold tracking-tight transition-colors", brandText)}
           aria-label="Kapture Logistics — Home"
         >
-          <KaptureSun size={26} className="text-kapture-black dark:text-kapture-yellow" />
+          <KaptureSun size={26} className={cn("transition-colors", sunColor)} />
           <span>
-            Kapture<span className="text-kapture-mist">·</span>
+            Kapture<span className={cn("transition-colors", scrolled ? "text-kapture-mist" : "text-white/50")}>·</span>
             <span className="font-semibold">Logistics</span>
           </span>
         </Link>
@@ -51,7 +62,7 @@ export function Navbar() {
             <Link
               key={item.href}
               href={item.href}
-              className="rounded-kapture px-3 py-2 text-sm font-medium text-kapture-smoke transition-colors hover:bg-kapture-paper hover:text-kapture-black dark:text-kapture-fog dark:hover:bg-kapture-ink dark:hover:text-kapture-white"
+              className={cn("rounded-kapture px-3 py-2 text-sm font-medium transition-colors", linkBase)}
             >
               {item.label}
             </Link>
@@ -60,13 +71,21 @@ export function Navbar() {
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <Link href="/quote" className="btn-primary hidden md:inline-flex">
+          <Link
+            href="/quote"
+            className={cn(
+              "hidden md:inline-flex btn-kapture transition-colors",
+              scrolled
+                ? "bg-kapture-black text-kapture-white hover:bg-transparent hover:text-kapture-black hover:ring-2 hover:ring-inset hover:ring-kapture-black dark:bg-kapture-white dark:text-kapture-black dark:hover:bg-transparent dark:hover:text-kapture-white dark:hover:ring-kapture-white"
+                : "bg-kapture-yellow text-kapture-black hover:bg-kapture-amber",
+            )}
+          >
             Ship Now
             <ArrowUpRight size={16} />
           </Link>
           <button
             type="button"
-            className="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-full border border-kapture-fog dark:border-kapture-ash"
+            className={cn("md:hidden inline-flex h-10 w-10 items-center justify-center rounded-full border transition-colors", iconBtn)}
             onClick={() => setOpen((s) => !s)}
             aria-label="Open menu"
           >

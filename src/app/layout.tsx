@@ -91,7 +91,7 @@ export default function RootLayout({
       <body className="min-h-screen bg-white font-sans text-kapture-black antialiased dark:bg-kapture-black dark:text-kapture-white">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <Navbar />
-          <main className="min-h-[calc(100vh-4rem)]">{children}</main>
+          <main className="min-h-[calc(100vh-4rem)] pt-16">{children}</main>
           <Footer />
         </ThemeProvider>
       </body>

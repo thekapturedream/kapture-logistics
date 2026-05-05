@@ -55,7 +55,7 @@ export function SolutionsGrid() {
                     <p className="mt-2 text-sm leading-relaxed text-kapture-smoke dark:text-kapture-fog">
                       {ind.body}
                     </p>
-                    <span className="mt-5 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-kapture-black transition-all group-hover:gap-2.5 dark:text-kapture-white">
+                    <span className="mt-5 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-kapture-black/80 transition-all group-hover:gap-2.5 dark:text-kapture-yellow">
                       Talk to a specialist
                       <ArrowUpRight size={12} />
                     </span>

@@ -38,26 +38,35 @@ const SERVICES: Service[] = [
   { id: "platform",     icon: Radar,        title: "Kapture Platform",  body: "Real-time tracking, SLAs, exception alerts, APIs.",                  href: "/services#platform",     tone: "dark"   },
 ];
 
-function tileClass(tone: Tone) {
-  if (tone === "dark") {
-    return "border-kapture-ash bg-kapture-black text-kapture-white hover:bg-kapture-coal";
+/**
+ * One source of truth for tile colour — every visual class for a tone lives
+ * here so the same logic flows across BentoServices, SolutionsGrid, and any
+ * future tone-aware components without drift.
+ */
+function tileTokens(tone: Tone) {
+  switch (tone) {
+    case "dark":
+      return {
+        card:  "border-kapture-ash bg-kapture-black text-kapture-white hover:bg-kapture-coal",
+        icon:  "bg-kapture-coal text-kapture-yellow",
+        body:  "text-kapture-fog",
+        cta:   "text-kapture-yellow",
+      };
+    case "yellow":
+      return {
+        card:  "border-kapture-yellow bg-kapture-yellow text-kapture-black hover:bg-kapture-amber",
+        icon:  "bg-kapture-black text-kapture-yellow",
+        body:  "text-kapture-black/75",
+        cta:   "text-kapture-black",
+      };
+    default: // light tone — adapts to colour mode
+      return {
+        card:  "border-kapture-fog/60 bg-white text-kapture-black hover:border-kapture-black dark:border-kapture-ash dark:bg-kapture-coal dark:text-kapture-white dark:hover:border-kapture-white",
+        icon:  "bg-kapture-paper text-kapture-black dark:bg-kapture-ash dark:text-kapture-white",
+        body:  "text-kapture-smoke dark:text-kapture-fog",
+        cta:   "text-kapture-black/80 dark:text-kapture-yellow",
+      };
   }
-  if (tone === "yellow") {
-    return "border-kapture-yellow bg-kapture-yellow text-kapture-black hover:bg-kapture-amber";
-  }
-  return "border-kapture-fog/60 bg-white text-kapture-black hover:border-kapture-black dark:border-kapture-ash dark:bg-kapture-coal dark:text-kapture-white dark:hover:border-kapture-white";
-}
-
-function iconClass(tone: Tone) {
-  if (tone === "dark") return "bg-kapture-coal text-kapture-yellow";
-  if (tone === "yellow") return "bg-kapture-black text-kapture-yellow";
-  return "bg-kapture-paper text-kapture-black dark:bg-kapture-ash dark:text-kapture-white";
-}
-
-function bodyClass(tone: Tone) {
-  if (tone === "dark") return "text-kapture-fog";
-  if (tone === "yellow") return "text-kapture-black/75";
-  return "text-kapture-smoke dark:text-kapture-fog";
 }
 
 export function BentoServices() {
@@ -79,6 +88,7 @@ export function BentoServices() {
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {SERVICES.map((s, idx) => {
           const Icon = s.icon;
+          const t = tileTokens(s.tone);
           return (
             <motion.div
               key={s.id}
@@ -90,18 +100,18 @@ export function BentoServices() {
               <Link
                 href={s.href}
                 className={cn(
-                  "group flex aspect-[4/5] flex-col justify-between rounded-2xl border p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-kapture-lift",
-                  tileClass(s.tone),
+                  "group flex h-full flex-col gap-6 rounded-2xl border p-7 transition-all duration-300 hover:-translate-y-1 hover:shadow-kapture-lift",
+                  t.card,
                 )}
               >
-                <div className={cn("inline-flex h-11 w-11 items-center justify-center rounded-full", iconClass(s.tone))}>
+                <div className={cn("inline-flex h-11 w-11 items-center justify-center rounded-full", t.icon)}>
                   <Icon size={20} strokeWidth={1.75} />
                 </div>
 
-                <div>
+                <div className="mt-2 flex flex-col gap-3">
                   <h3 className="font-display text-xl font-bold tracking-tight">{s.title}</h3>
-                  <p className={cn("mt-2 text-sm leading-relaxed", bodyClass(s.tone))}>{s.body}</p>
-                  <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider transition-all group-hover:gap-2.5">
+                  <p className={cn("text-sm leading-relaxed", t.body)}>{s.body}</p>
+                  <span className={cn("mt-2 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider transition-all group-hover:gap-2.5", t.cta)}>
                     Learn more
                     <ArrowUpRight size={12} />
                   </span>

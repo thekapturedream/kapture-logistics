@@ -87,10 +87,16 @@ export function Navbar() {
           <ThemeToggleInline overHero={overHero} />
           <Link
             href="/quote"
-            className={cn("hidden md:inline-flex btn-kapture transition-colors", cta)}
+            className={cn(
+              // Navbar-only override: 40px height, narrower padding, smaller text.
+              // The min-h-0 cancels the global .btn-kapture 50px floor so Ship
+              // Now sits clean against the 40px circular theme toggle beside it.
+              "hidden md:inline-flex btn-kapture !min-h-0 h-10 px-4 text-xs transition-colors",
+              cta,
+            )}
           >
             Ship Now
-            <ArrowUpRight size={16} />
+            <ArrowUpRight size={14} />
           </Link>
           <button
             type="button"
@@ -150,12 +156,12 @@ function ThemeToggleInline({ overHero: _overHero }: { overHero: boolean }) {
       type="button"
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-kapture-yellow text-kapture-black shadow-kapture-yellow transition-all hover:bg-kapture-amber"
+      className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-kapture-yellow text-kapture-black shadow-kapture-yellow transition-all hover:bg-kapture-amber"
     >
       {mounted ? (
-        isDark ? <Sun size={16} /> : <Moon size={16} />
+        isDark ? <Sun size={14} /> : <Moon size={14} />
       ) : (
-        <span className="block h-4 w-4 rounded-full bg-kapture-black/20" />
+        <span className="block h-3 w-3 rounded-full bg-kapture-black/20" />
       )}
     </button>
   );

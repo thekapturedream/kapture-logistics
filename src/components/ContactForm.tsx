@@ -2,7 +2,8 @@
 
 import * as React from "react";
 import { motion } from "framer-motion";
-import { Send, CheckCircle2, AlertTriangle } from "lucide-react";
+import { Send, CheckCircle2, AlertTriangle, CalendarClock } from "lucide-react";
+import { CalendlyEmbed } from "./CalendlyEmbed";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
@@ -56,17 +57,25 @@ export function ContactForm({ topic = "general" }: { topic?: string }) {
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        className="rounded-2xl border border-kapture-yellow bg-kapture-yellow/10 p-8"
+        className="space-y-6"
       >
-        <CheckCircle2 className="text-kapture-amber" size={28} />
-        <h3 className="mt-4 font-display text-2xl font-bold">Message received.</h3>
-        <p className="mt-2 text-sm text-kapture-smoke dark:text-kapture-fog">
-          A Kapture team member will reach out shortly. For urgent shipments use the
-          quote desk for fastest routing.
-        </p>
-        <button type="button" onClick={() => setStatus("idle")} className="btn-secondary mt-6">
-          Send another
-        </button>
+        <div className="rounded-2xl border border-kapture-yellow bg-kapture-yellow/10 p-7 md:p-8">
+          <CheckCircle2 className="text-kapture-amber" size={28} />
+          <h3 className="mt-4 font-display text-2xl font-bold">Message received.</h3>
+          <p className="mt-2 text-sm text-kapture-smoke dark:text-kapture-fog md:text-base">
+            A Kapture team member will be in touch. To fast-track your enquiry, lock a
+            15-minute discovery call below — we'll cover everything on the call.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3 px-1">
+          <CalendarClock size={18} className="text-kapture-yellow" />
+          <p className="text-sm font-semibold uppercase tracking-wider text-kapture-mist">
+            Pick a slot · Free · 15 minutes
+          </p>
+        </div>
+
+        <CalendlyEmbed />
       </motion.div>
     );
   }

@@ -47,9 +47,13 @@ export function Navbar() {
     ? "border-white/20 text-white hover:bg-white hover:text-kapture-black"
     : "border-kapture-fog text-kapture-black hover:bg-kapture-black hover:text-kapture-white dark:border-kapture-ash dark:text-kapture-white dark:hover:bg-kapture-white dark:hover:text-kapture-black";
 
+  // Ship Now is white over the hero (high contrast vs. dark video). Once
+  // scrolled past, it flips to a high-contrast solid that survives the white
+  // nav background in light mode and the black nav background in dark mode —
+  // a flat white button on white would otherwise vanish.
   const cta = overHero
-    ? "bg-kapture-yellow text-kapture-black hover:bg-kapture-amber"
-    : "bg-kapture-black text-kapture-white hover:bg-transparent hover:text-kapture-black hover:ring-2 hover:ring-inset hover:ring-kapture-black dark:bg-kapture-white dark:text-kapture-black dark:hover:bg-transparent dark:hover:text-kapture-white dark:hover:ring-kapture-white";
+    ? "bg-white text-kapture-black hover:bg-kapture-paper"
+    : "bg-kapture-black text-kapture-white hover:bg-transparent hover:text-kapture-black hover:ring-2 hover:ring-inset hover:ring-kapture-black dark:bg-white dark:text-kapture-black dark:hover:bg-transparent dark:hover:text-white dark:hover:ring-white";
 
   return (
     <header className={cn("fixed top-0 z-50 w-full border-b transition-all", headerBg)}>
@@ -79,7 +83,7 @@ export function Navbar() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3 md:gap-4">
           <ThemeToggleInline overHero={overHero} />
           <Link
             href="/quote"

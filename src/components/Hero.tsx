@@ -2,8 +2,8 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-import { ArrowRight, MapPin, PackageSearch, Truck, Plane, Ship, Navigation } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowRight, MapPin, PackageSearch, Truck, Plane, Ship, Navigation, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Mode = "road" | "air" | "sea" | "express";
@@ -28,11 +28,46 @@ export function Hero() {
   const [origin, setOrigin] = React.useState("");
   const [destination, setDestination] = React.useState("");
   const [cargo, setCargo] = React.useState("Pallet");
-  // Mobile-only collapse: starts with tabs + pickup field only.
-  // Any interaction (tab click or pickup focus) expands the form upward.
-  // Tablet and up always render expanded — flag is ignored beyond `sm:`.
+  // Mobile-only behaviour. Form starts collapsed (tabs + pickup). Tapping any
+  // tab or focusing the pickup field flips `expanded`. While expanded on
+  // mobile the form transforms into a fixed bottom-sheet with a dim backdrop
+  // — the page does NOT scroll behind it, the keyboard slides in below the
+  // sheet, and the focused field stays visible above the keyboard. Tablet+
+  // ignores `expanded` entirely (sm: prefix overrides every conditional).
   const [expanded, setExpanded] = React.useState(false);
   const expand = () => setExpanded(true);
+  const closeForm = React.useCallback(() => {
+    setExpanded(false);
+    // Dismiss any open keyboard by blurring the focused element.
+    if (typeof document !== "undefined") {
+      const el = document.activeElement as HTMLElement | null;
+      el?.blur?.();
+    }
+  }, []);
+
+  // Lock body scroll while the bottom-sheet is up so the page underneath
+  // can't be flicked. Mobile only — the listener is a noop on tablet+.
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    const isMobile = window.matchMedia("(max-width: 639px)").matches;
+    if (expanded && isMobile) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = prev;
+      };
+    }
+  }, [expanded]);
+
+  // Esc key dismisses (helpful on tablets with keyboards too).
+  React.useEffect(() => {
+    if (!expanded) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") closeForm();
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [expanded, closeForm]);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -104,14 +139,48 @@ export function Hero() {
         {/* Mobile-only spacer: pushes the form into the bottom third */}
         <div className="grow sm:hidden" />
 
-        {/* Quote calculator. Submission flows to /quote. */}
+        {/* Backdrop — only rendered on mobile when expanded. Tap to dismiss. */}
+        <AnimatePresence>
+          {expanded && (
+            <motion.button
+              key="hero-backdrop"
+              type="button"
+              aria-label="Close form"
+              onClick={closeForm}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 z-40 cursor-default bg-black/65 backdrop-blur-sm sm:hidden"
+            />
+          )}
+        </AnimatePresence>
+
+        {/* Quote calculator. Submission flows to /quote.
+            Mobile expanded → fixed bottom-sheet (z-50, above the backdrop).
+            Otherwise → in-flow at the bottom of the hero. */}
         <motion.form
           onSubmit={handleSubmit}
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.15 }}
-          className="mx-auto mt-6 w-full max-w-4xl rounded-2xl border border-white/10 bg-white/95 p-3 shadow-2xl backdrop-blur-md sm:mt-12 dark:bg-kapture-ink/95 md:p-4"
+          className={cn(
+            "relative mx-auto mt-6 w-full max-w-4xl rounded-2xl border border-white/10 bg-white/95 p-3 shadow-2xl backdrop-blur-md sm:mt-12 dark:bg-kapture-ink/95 md:p-4",
+            expanded &&
+              "max-sm:fixed max-sm:inset-x-0 max-sm:bottom-0 max-sm:z-50 max-sm:m-0 max-sm:max-h-[88vh] max-sm:max-w-none max-sm:overflow-y-auto max-sm:rounded-b-none max-sm:border-x-0 max-sm:border-b-0 max-sm:pb-[max(1rem,env(safe-area-inset-bottom))]",
+          )}
         >
+          {/* Close button — mobile, expanded only */}
+          {expanded && (
+            <button
+              type="button"
+              onClick={closeForm}
+              aria-label="Close form"
+              className="absolute right-3 top-3 z-10 inline-flex h-8 w-8 items-center justify-center rounded-full bg-kapture-paper text-kapture-black transition-colors hover:bg-kapture-fog sm:hidden dark:bg-kapture-ash dark:text-kapture-white dark:hover:bg-kapture-coal"
+            >
+              <X size={14} />
+            </button>
+          )}
           {/* Mode tabs — 4 in one row on mobile (grid), inline on tablet+ */}
           <div className="grid grid-cols-4 gap-1 px-1 pb-3 pt-1 sm:flex sm:flex-wrap sm:items-center sm:px-2">
             {MODES.map((m) => (
@@ -184,7 +253,7 @@ export function Hero() {
 
             <button
               type="submit"
-              className={cn("btn-primary h-14 px-7 text-base", !expanded && "max-sm:hidden")}
+              className={cn("btn-yellow h-14 px-7 text-base", !expanded && "max-sm:hidden")}
             >
               See Prices
               <ArrowRight size={18} />

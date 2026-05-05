@@ -42,7 +42,7 @@ body {
   }
 
   .btn-kapture {
-    @apply inline-flex w-full items-center justify-center gap-2 rounded-kapture px-5 py-3 text-sm font-semibold tracking-tight transition-all duration-200 sm:w-auto;
+    @apply inline-flex w-full min-h-[50px] items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold tracking-tight transition-all duration-200 sm:w-auto;
   }
 
   .btn-primary {

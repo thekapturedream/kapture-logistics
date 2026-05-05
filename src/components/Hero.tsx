@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { ArrowRight, MapPin, PackageSearch, Truck, Plane, Ship, Navigation } from "lucide-react";
+import { ArrowRight, ChevronDown, MapPin, PackageSearch, Truck, Plane, Ship, Navigation } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Mode = "road" | "air" | "sea" | "express";
@@ -28,6 +28,11 @@ export function Hero() {
   const [origin, setOrigin] = React.useState("");
   const [destination, setDestination] = React.useState("");
   const [cargo, setCargo] = React.useState("Pallet");
+  // Mobile-only: form starts collapsed (tabs + pickup field) so the hero
+  // video has room to breathe on first load. Any interaction expands it.
+  // Tablet and up never collapse — the form is always full-size.
+  const [expanded, setExpanded] = React.useState(false);
+  const expand = () => setExpanded(true);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -102,7 +107,10 @@ export function Hero() {
               <button
                 key={m.id}
                 type="button"
-                onClick={() => setMode(m.id)}
+                onClick={() => {
+                  setMode(m.id);
+                  expand();
+                }}
                 className={cn(
                   "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-all",
                   mode === m.id
@@ -125,17 +133,18 @@ export function Hero() {
                 required
                 value={origin}
                 onChange={(e) => setOrigin(e.target.value)}
+                onFocus={expand}
                 placeholder="Pickup location"
                 className="field h-14 pl-12 text-base"
               />
             </label>
 
-            <label className="relative">
+            <label className={cn("relative", !expanded && "max-sm:hidden")}>
               <span className="sr-only">Drop-off location</span>
               <Navigation size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-kapture-mist" />
               <input
                 type="text"
-                required
+                required={expanded}
                 value={destination}
                 onChange={(e) => setDestination(e.target.value)}
                 placeholder="Drop-off location"
@@ -143,7 +152,7 @@ export function Hero() {
               />
             </label>
 
-            <label className="relative md:w-48">
+            <label className={cn("relative md:w-48", !expanded && "max-sm:hidden")}>
               <span className="sr-only">Cargo type</span>
               <PackageSearch size={18} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-kapture-mist" />
               <select
@@ -161,13 +170,28 @@ export function Hero() {
               </select>
             </label>
 
-            <button type="submit" className="btn-primary h-14 px-7 text-base">
+            <button
+              type="submit"
+              className={cn("btn-primary h-14 px-7 text-base", !expanded && "max-sm:hidden")}
+            >
               See Prices
               <ArrowRight size={18} />
             </button>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 px-2 pb-1 pt-3">
+          {/* Mobile-only collapse hint — taps to expand the form */}
+          {!expanded && (
+            <button
+              type="button"
+              onClick={expand}
+              className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-kapture px-3 py-2 text-xs font-semibold uppercase tracking-wider text-kapture-mist transition-colors hover:text-kapture-black sm:hidden dark:hover:text-kapture-white"
+            >
+              Tap for full quote
+              <ChevronDown size={12} />
+            </button>
+          )}
+
+          <div className={cn("flex flex-wrap items-center gap-2 px-2 pb-1 pt-3", !expanded && "max-sm:hidden")}>
             <span className="text-[11px] uppercase tracking-wider text-kapture-mist">
               Popular lanes
             </span>

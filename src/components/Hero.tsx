@@ -40,7 +40,7 @@ export function Hero() {
       {/* Solid black underlay — guarantees pure black until video has frames */}
       <div className="absolute inset-0 -z-30 bg-kapture-black" aria-hidden="true" />
 
-      {/* Video background */}
+      {/* Video background — opacity 70% (blends with black underlay) */}
       <video
         autoPlay
         muted
@@ -48,20 +48,16 @@ export function Hero() {
         playsInline
         preload="auto"
         poster="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%201%201%27%3E%3Crect%20width%3D%271%27%20height%3D%271%27%20fill%3D%27%230A0A0A%27%2F%3E%3C%2Fsvg%3E"
-        className="absolute inset-0 -z-20 h-full w-full bg-kapture-black object-cover"
+        className="absolute inset-0 -z-20 h-full w-full bg-kapture-black object-cover opacity-70"
         aria-hidden="true"
       >
         <source src="/hero-bg.mp4" type="video/mp4" />
       </video>
 
-      {/* Dim overlays for legibility */}
+      {/* Subtle dim — keeps headline legible at top, form area legible at bottom */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-gradient-to-b from-black/70 via-black/55 to-black/85"
-      />
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.4),rgba(0,0,0,0.85))]"
+        className="absolute inset-0 -z-10 bg-gradient-to-b from-black/40 via-transparent to-black/45"
       />
 
       <div className="container-kapture relative pb-24 pt-24 md:pt-32 lg:pt-40">

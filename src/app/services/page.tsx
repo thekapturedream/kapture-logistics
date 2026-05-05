@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowUpRight, Layers, Truck, PackageCheck, Globe2, Plane, Radar, Ship } from "lucide-react";
 import { PageHeader } from "@/components/PageHeader";
+import { ImageStrip } from "@/components/ImageStrip";
 import { CTA } from "@/components/CTA";
 
 export const metadata: Metadata = {
@@ -88,6 +89,14 @@ export default function ServicesPage() {
           </Link>
         </div>
       </PageHeader>
+
+      <ImageStrip
+        src="https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=2000&q=80"
+        alt="Long-haul logistics in motion"
+        eyebrow="Services in motion"
+        caption="Road, rail, ocean, air — running on one operating layer."
+        height="short"
+      />
 
       <div className="container-kapture py-24">
         <div className="space-y-24">

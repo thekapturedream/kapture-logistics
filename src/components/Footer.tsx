@@ -61,9 +61,10 @@ export function Footer() {
               </span>
             </Link>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-kapture-smoke dark:text-kapture-fog">
-              A Kapture company. We unify managed transportation, multi-modal capacity, and
-              last-mile delivery into one shared operating layer — built for ambitious operators
-              moving across Africa and the world.
+              Designed and engineered by Kapture. A deployable logistics system
+              that unifies managed transportation, multi-modal capacity, and
+              last-mile delivery into one shared operating layer — built for
+              ambitious operators moving across Africa and the world.
             </p>
 
             <div className="mt-6 space-y-3 text-sm">
@@ -118,7 +119,7 @@ export function Footer() {
 
         <div className="mt-16 flex flex-col items-start justify-between gap-4 border-t border-kapture-fog/60 pt-8 text-xs text-kapture-mist dark:border-kapture-ash sm:flex-row sm:items-center">
           <div>
-            © {year} {SITE.name}. A {SITE.parent} company.
+            © {year} {SITE.name}. Designed and engineered by {SITE.parent}.
           </div>
           <div className="flex items-center gap-6">
             <Link href="/contact?topic=privacy" className="hover:text-kapture-black dark:hover:text-kapture-white">

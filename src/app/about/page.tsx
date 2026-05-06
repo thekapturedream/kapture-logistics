@@ -7,9 +7,9 @@ import { CTA } from "@/components/CTA";
 import { SITE } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "About — A Kapture company",
+  title: "About — Designed and engineered by Kapture",
   description:
-    "Kapture Logistics is the freight and supply-chain arm of Kapture, the digital agency turning bold ideas into operating businesses.",
+    "Kapture Logistics is a deployable freight and supply-chain system designed and engineered by Kapture — the studio turning bold ideas into operating businesses.",
 };
 
 const PRINCIPLES = [
@@ -36,8 +36,8 @@ export default function AboutPage() {
     <>
       <PageHeader
         eyebrow="About"
-        title="A Kapture company, built for operators with bold cargo."
-        lede="Kapture Logistics is the freight and supply-chain arm of Kapture — the agency turning bold ideas into operating businesses across Africa and beyond."
+        title="Designed and engineered by Kapture for operators with bold cargo."
+        lede="Kapture Logistics is a deployable system — designed and engineered by Kapture, the studio turning bold ideas into operating businesses across Africa and beyond. Not a company. A solution."
       >
         <div className="flex flex-wrap gap-3">
           <Link href="/contact?topic=partner" className="btn-primary">
@@ -64,18 +64,19 @@ export default function AboutPage() {
           </div>
           <div className="lg:col-span-7">
             <p className="lede">
-              Kapture began as a digital studio for ambitious operators — founders, governments,
+              Kapture is a digital studio for ambitious operators — founders, governments,
               and enterprises with bold ideas and short timelines. Logistics was the first hard
               problem our clients kept hitting: lanes that broke, partners that ghosted, software
               that lied.
             </p>
             <p className="lede mt-4">
-              Kapture Logistics is what we built in response. A managed transportation business
-              wrapped around a software platform, run by a team that has shipped across every major
-              SADC corridor and every gateway that matters.
+              Kapture Logistics is what we engineered in response. A deployable software system
+              wrapped around managed transportation, multi-modal capacity, and last-mile delivery
+              — designed for operators that need to move cargo today and own the digital layer
+              tomorrow.
             </p>
             <p className="lede mt-4">
-              Today, Kapture Logistics moves cargo for retailers, manufacturers, miners, and
+              Today, the Kapture Logistics system runs for retailers, manufacturers, miners, and
               healthcare brands across the continent — and for international shippers moving into
               Africa for the first time.
             </p>

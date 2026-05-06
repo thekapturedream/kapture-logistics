@@ -264,7 +264,7 @@ export function Hero() {
 
             <button
               type="submit"
-              className={cn("btn-yellow h-14 px-7 text-base", !expanded && "max-sm:hidden")}
+              className="btn-yellow h-14 px-7 text-base"
             >
               See Prices
               <ArrowRight size={18} />

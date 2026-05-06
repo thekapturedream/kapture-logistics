@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cpu, Globe2, Layers, Search, ShieldCheck } from "lucide-react";
+import { Cpu, Globe2, Layers, Palette, Search, ShieldCheck } from "lucide-react";
 import { RequestAuditForm } from "@/components/RequestAuditForm";
 
 export const metadata: Metadata = {
@@ -8,12 +8,15 @@ export const metadata: Metadata = {
     "Get your logistics website scored against the nine dimensions used in the State of UK Logistics Websites 2026 report. Public dashboard delivered in 48 hours.",
 };
 
+// Six dimensions (of the nine in the full audit) — chosen to land perfectly
+// in a 2x3 grid on tablet and a 3x2 grid on desktop. No empty cells.
 const DIMENSIONS = [
   { icon: Globe2,      label: "Domain Health",    body: "Speed, SSL, mobile fitness, technical SEO." },
   { icon: Search,      label: "AI search",         body: "Schema, citations, ChatGPT/Perplexity visibility." },
   { icon: Layers,      label: "Conversion flow",   body: "Quote forms, lead capture, time-to-contact." },
   { icon: Cpu,         label: "Tech stack",        body: "Hosting, CMS, security, AI integrations." },
   { icon: ShieldCheck, label: "Trust signals",     body: "Reviews, accreditations, named clients, press." },
+  { icon: Palette,     label: "Visual identity",   body: "Logos, colours, typography, photography consistency." },
 ];
 
 export default function RequestAuditPage() {
@@ -49,10 +52,10 @@ export default function RequestAuditPage() {
           <div className="mx-auto mb-12 max-w-2xl">
             <p className="chip"><span className="divider-dot" />What we audit</p>
             <h2 className="h-section mt-4 text-balance">
-              Five of the nine dimensions.
+              Six of the nine dimensions.
             </h2>
             <p className="lede mt-3">
-              The full audit covers nine. These five are where most UK logistics
+              The full audit covers nine. These six are where most UK logistics
               brands lose ground first.
             </p>
           </div>

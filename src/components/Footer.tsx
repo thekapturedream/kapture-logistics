@@ -121,12 +121,18 @@ export function Footer() {
           <div>
             © {year} {SITE.name}. Designed and engineered by {SITE.parent}.
           </div>
-          <div className="flex items-center gap-6">
-            <Link href="/contact?topic=privacy" className="hover:text-kapture-black dark:hover:text-kapture-white">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+            <Link href="/privacy" className="hover:text-kapture-black dark:hover:text-kapture-white">
               Privacy
             </Link>
-            <Link href="/contact?topic=terms" className="hover:text-kapture-black dark:hover:text-kapture-white">
+            <Link href="/terms" className="hover:text-kapture-black dark:hover:text-kapture-white">
               Terms
+            </Link>
+            <Link href="/cookies" className="hover:text-kapture-black dark:hover:text-kapture-white">
+              Cookies
+            </Link>
+            <Link href="/refunds" className="hover:text-kapture-black dark:hover:text-kapture-white">
+              Refunds
             </Link>
             <a
               href={SITE.parentUrl}

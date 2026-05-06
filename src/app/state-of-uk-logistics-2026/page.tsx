@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowUpRight, Cpu, FileText, Zap } from "lucide-react";
+import { ArrowUpRight, Cpu, FileText, Zap, type LucideIcon } from "lucide-react";
 import { StateOfUkForm } from "@/components/StateOfUkForm";
 import { CountUp } from "@/components/CountUp";
 import { ScoreDistribution } from "@/components/ScoreDistribution";
@@ -344,7 +344,7 @@ function ToolCard({
   title,
   body,
 }: {
-  icon: React.ComponentType<{ size?: number; strokeWidth?: number; className?: string }>;
+  icon: LucideIcon;
   title: string;
   body: string;
 }) {

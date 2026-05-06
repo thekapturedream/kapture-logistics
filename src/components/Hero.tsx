@@ -101,19 +101,22 @@ export function Hero() {
       />
 
       {/*
-        Mobile-first vertical layout:
-          - section is min-h-screen on mobile (svh works around mobile chrome)
-          - on mobile, flex order swaps so the spacer (order-1) sits above
-            the headline (order-2), pushing the headline down to sit
-            directly above the form (order-3) with a 20px gap (mt-5 on
-            the form). The chip + tagline are gone; the headline is the
-            single hero text element.
-          - tablet+ reverts to the original block layout via sm: overrides
-            (sm:order-none, sm:mt-12) so the centred composition is
-            preserved at desktop sizes.
+        Vertical layout — bottom-anchored on every viewport:
+          - section is 100svh on mobile, 100vh on desktop
+          - flex-col with a grow spacer (order-1) at the top — it inflates
+            to fill the empty area, pushing the rest to the bottom
+          - mobile order: spacer / headline / form / stats
+              · headline 20px above form (mt-5)
+              · form 32px below stats fallback handled inside form
+          - desktop order: spacer / stats / headline / form
+              · stats sit as a small strap above the headline
+              · headline 40px above the form (sm:mt-10 on form)
+              · form 40px from the section bottom (sm:pb-10)
+        Order utilities make the form the bottom-most piece on desktop
+        without duplicating any markup.
       */}
-      <div className="container-kapture relative flex min-h-[100svh] flex-col pb-8 pt-24 sm:block sm:min-h-[100vh] sm:pb-24 md:pt-32 lg:pt-40">
-        <div className="order-2 mx-auto max-w-4xl text-center sm:order-none">
+      <div className="container-kapture relative flex min-h-[100svh] flex-col pb-8 pt-24 sm:min-h-[100vh] sm:pb-10 md:pt-32 lg:pt-40">
+        <div className="order-2 mx-auto max-w-4xl text-center sm:order-3 sm:mt-4">
           <motion.h1
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -128,9 +131,9 @@ export function Hero() {
           </motion.h1>
         </div>
 
-        {/* Mobile-only spacer: order-1 puts it above the headline so the
-            headline gets pushed down to sit directly above the form. */}
-        <div className="order-1 grow sm:hidden" />
+        {/* Spacer — order-1 on all sizes, grows to fill empty space and push
+            the headline + form group to the bottom of the viewport. */}
+        <div className="order-1 grow" />
 
         {/* Backdrop — only rendered on mobile when expanded. Tap to dismiss. */}
         <AnimatePresence>
@@ -158,10 +161,11 @@ export function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.15 }}
           className={cn(
-            // mt-5 (20px) on mobile = the gap between the headline and the
-            // form, per spec. sm:mt-12 keeps the original desktop spacing.
-            // order-3 keeps the form below the (mobile-reordered) headline.
-            "relative order-3 mx-auto mt-5 w-full max-w-4xl rounded-2xl border border-white/10 bg-white/95 p-3 shadow-2xl backdrop-blur-md sm:order-none sm:mt-12 dark:bg-kapture-ink/95 md:p-4",
+            // mt-5 (20px) on mobile and sm:mt-10 (40px) on desktop = the
+            // gap between the headline and the form. order-3 / sm:order-4
+            // keeps the form below the headline on every viewport. The
+            // 40px-from-bottom is enforced by sm:pb-10 on the wrapper.
+            "relative order-3 mx-auto mt-5 w-full max-w-4xl rounded-2xl border border-white/10 bg-white/95 p-3 shadow-2xl backdrop-blur-md sm:order-4 sm:mt-10 dark:bg-kapture-ink/95 md:p-4",
             expanded &&
               "max-sm:fixed max-sm:inset-x-0 max-sm:bottom-0 max-sm:z-50 max-sm:m-0 max-sm:max-h-[88vh] max-sm:max-w-none max-sm:overflow-y-auto max-sm:rounded-b-none max-sm:border-x-0 max-sm:border-b-0 max-sm:pb-[max(1rem,env(safe-area-inset-bottom))]",
           )}
@@ -318,7 +322,7 @@ export function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="order-4 mx-auto mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-white/70 sm:order-none sm:mt-8"
+          className="order-4 mx-auto mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-white/70 sm:order-2 sm:mt-0"
         >
           <span className="inline-flex items-center gap-1.5">
             <span className="relative flex h-2 w-2">

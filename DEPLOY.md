@@ -36,7 +36,31 @@ gh repo create kapture-logistics --public --source=. --remote=origin --push
    - `anon` public key
    - `service_role` secret key
 
-## 4 — Wire email delivery (Resend)
+## 4 — Wire calendar booking (Calendly ↔ Google Calendar)
+
+The booking widget that shows after a form submission lives at the URL in `NEXT_PUBLIC_CALENDLY_URL`. Calendly handles the calendar integration end — when a visitor picks a slot, Calendly checks the connected Google Calendar for availability and writes the new booking back to it.
+
+Setup is six steps, all on Calendly's side:
+
+1. Open [calendly.com](https://calendly.com) and sign up (or sign in) using **the Google account that owns Kapture's Google Calendar**. Calendly's Sign in with Google flow will auto-connect that calendar.
+2. If you signed up another way, go to **Calendly → Account → Calendar Connection → Connect Google**, sign in to the Kapture Google account, grant permission. Calendly now reads availability from and writes bookings to that calendar.
+3. Pick which calendar(s) to use for **availability checks** (so Calendly knows when you're busy) and which one to use for **adding new events** (where bookings land). Both should be Kapture's primary calendar.
+4. Create a new event type: **Create → One-on-One** → name it `Discovery Call`, duration `15 minutes`, location set to either Google Meet (auto-creates a meeting link) or a custom phone-call instruction.
+5. Set your availability hours. Calendly defaults to Mon-Fri 9am-5pm — adjust to suit Kapture's schedule.
+6. **Copy the public event URL** — looks like `https://calendly.com/your-handle/discovery-call`. Paste this into Vercel as `NEXT_PUBLIC_CALENDLY_URL` and redeploy.
+
+That's the whole link. From this point on:
+
+- A visitor submits a form → Calendly widget loads, pre-filled with their name, email, and company (the form data flows in via URL params automatically).
+- They pick a slot → Calendly writes the event to your Google Calendar with all the details.
+- You and the visitor both get confirmation emails. The Google Meet link (if you chose that option) is in the calendar event.
+- If you reschedule or cancel from Google Calendar, Calendly syncs the change back to the visitor.
+
+**Free tier limits:** 1 active event type, 1 calendar connection, unlimited bookings. Plenty for the discovery-call funnel.
+
+## 5 — Wire email delivery (Resend)
+
+
 
 Every form submission emails `studio@thekapture.com` with the lead details. Setup is two steps and stays free for the first 3,000 emails/month:
 

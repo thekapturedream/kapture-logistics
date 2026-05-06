@@ -14,10 +14,20 @@ const INTENTS = [
   { id: "custom",    label: "Build something custom",          body: "Bespoke site designed from scratch around my business." },
 ];
 
+type SubmittedLead = {
+  name?: string;
+  email?: string;
+  company?: string;
+  message?: string;
+};
+
 export function QuoteForm() {
   const [status, setStatus] = React.useState<Status>("idle");
   const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
   const [intent, setIntent] = React.useState<string>("buy");
+  // Capture name/email/company from the submission so the Calendly widget
+  // opens pre-filled — visitor doesn't type their info twice.
+  const [submitted, setSubmitted] = React.useState<SubmittedLead>({});
   const formRef = React.useRef<HTMLFormElement>(null);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -40,6 +50,12 @@ export function QuoteForm() {
         throw new Error(data?.error || "Could not submit. Please try again.");
       }
 
+      setSubmitted({
+        name:    typeof payload.name    === "string" ? payload.name    : undefined,
+        email:   typeof payload.email   === "string" ? payload.email   : undefined,
+        company: typeof payload.company === "string" ? payload.company : undefined,
+        message: typeof payload.message === "string" ? payload.message : undefined,
+      });
       setStatus("success");
       formRef.current?.reset();
     } catch (err) {
@@ -74,7 +90,14 @@ export function QuoteForm() {
           </p>
         </div>
 
-        <CalendlyEmbed />
+        <CalendlyEmbed
+          prefill={{
+            name: submitted.name,
+            email: submitted.email,
+            company: submitted.company,
+            notes: submitted.message,
+          }}
+        />
       </motion.div>
     );
   }

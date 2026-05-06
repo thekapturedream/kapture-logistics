@@ -25,9 +25,17 @@ const TOPICS = [
   { value: "careers",        label: "Careers" },
 ];
 
+type SubmittedLead = {
+  name?: string;
+  email?: string;
+  company?: string;
+  message?: string;
+};
+
 export function ContactForm({ topic = "general" }: { topic?: string }) {
   const [status, setStatus] = React.useState<Status>("idle");
   const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
+  const [submitted, setSubmitted] = React.useState<SubmittedLead>({});
   const formRef = React.useRef<HTMLFormElement>(null);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -47,6 +55,12 @@ export function ContactForm({ topic = "general" }: { topic?: string }) {
         const data = await res.json().catch(() => ({}));
         throw new Error(data?.error || "Could not submit. Please try again.");
       }
+      setSubmitted({
+        name:    typeof payload.name    === "string" ? payload.name    : undefined,
+        email:   typeof payload.email   === "string" ? payload.email   : undefined,
+        company: typeof payload.company === "string" ? payload.company : undefined,
+        message: typeof payload.message === "string" ? payload.message : undefined,
+      });
       setStatus("success");
       formRef.current?.reset();
     } catch (err) {
@@ -78,7 +92,14 @@ export function ContactForm({ topic = "general" }: { topic?: string }) {
           </p>
         </div>
 
-        <CalendlyEmbed />
+        <CalendlyEmbed
+          prefill={{
+            name: submitted.name,
+            email: submitted.email,
+            company: submitted.company,
+            notes: submitted.message,
+          }}
+        />
       </motion.div>
     );
   }

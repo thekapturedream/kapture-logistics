@@ -103,40 +103,34 @@ export function Hero() {
       {/*
         Mobile-first vertical layout:
           - section is min-h-screen on mobile (svh works around mobile chrome)
-          - badge + headline anchor to the top with pt-24
-          - flex-grow spacer pushes the form into the bottom third
-          - form + stats live at the bottom with pb-8
-        Tablet+ reverts to the original block layout via sm: overrides so the
-        existing centred composition is untouched.
+          - on mobile, flex order swaps so the spacer (order-1) sits above
+            the headline (order-2), pushing the headline down to sit
+            directly above the form (order-3) with a 20px gap (mt-5 on
+            the form). The chip + tagline are gone; the headline is the
+            single hero text element.
+          - tablet+ reverts to the original block layout via sm: overrides
+            (sm:order-none, sm:mt-12) so the centred composition is
+            preserved at desktop sizes.
       */}
       <div className="container-kapture relative flex min-h-[100svh] flex-col pb-8 pt-24 sm:block sm:min-h-0 sm:pb-24 md:pt-32 lg:pt-40">
-        <div className="mx-auto max-w-4xl text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mx-auto inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-3 py-1 text-xs font-medium uppercase tracking-wider text-white/80 backdrop-blur"
-          >
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-kapture-yellow" />
-            Freight & Logistics, Powered by Kapture
-          </motion.div>
-
+        <div className="order-2 mx-auto max-w-4xl text-center sm:order-none">
           <motion.h1
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.05 }}
-            className="mt-6 font-display text-hero-xl text-balance text-white"
+            className="font-display text-hero-xl text-balance text-white"
           >
             <span className="relative inline-block pb-1">
               Move
               <span className="absolute -bottom-0 left-0 h-1.5 w-full -skew-x-6 bg-kapture-yellow" aria-hidden />
             </span>{" "}
-            a load today with Kapture.
+            a load today.
           </motion.h1>
         </div>
 
-        {/* Mobile-only spacer: pushes the form into the bottom third */}
-        <div className="grow sm:hidden" />
+        {/* Mobile-only spacer: order-1 puts it above the headline so the
+            headline gets pushed down to sit directly above the form. */}
+        <div className="order-1 grow sm:hidden" />
 
         {/* Backdrop — only rendered on mobile when expanded. Tap to dismiss. */}
         <AnimatePresence>
@@ -164,7 +158,10 @@ export function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.15 }}
           className={cn(
-            "relative mx-auto mt-6 w-full max-w-4xl rounded-2xl border border-white/10 bg-white/95 p-3 shadow-2xl backdrop-blur-md sm:mt-12 dark:bg-kapture-ink/95 md:p-4",
+            // mt-5 (20px) on mobile = the gap between the headline and the
+            // form, per spec. sm:mt-12 keeps the original desktop spacing.
+            // order-3 keeps the form below the (mobile-reordered) headline.
+            "relative order-3 mx-auto mt-5 w-full max-w-4xl rounded-2xl border border-white/10 bg-white/95 p-3 shadow-2xl backdrop-blur-md sm:order-none sm:mt-12 dark:bg-kapture-ink/95 md:p-4",
             expanded &&
               "max-sm:fixed max-sm:inset-x-0 max-sm:bottom-0 max-sm:z-50 max-sm:m-0 max-sm:max-h-[88vh] max-sm:max-w-none max-sm:overflow-y-auto max-sm:rounded-b-none max-sm:border-x-0 max-sm:border-b-0 max-sm:pb-[max(1rem,env(safe-area-inset-bottom))]",
           )}
@@ -321,7 +318,7 @@ export function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="mx-auto mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-white/70 sm:mt-8"
+          className="order-4 mx-auto mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-white/70 sm:order-none sm:mt-8"
         >
           <span className="inline-flex items-center gap-1.5">
             <span className="relative flex h-2 w-2">

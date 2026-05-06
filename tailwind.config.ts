@@ -23,6 +23,14 @@ const config: Config = {
           yellow: "#FFD400",
           amber: "#F5B400",
         },
+        // Audit score grades — used in /state-of-uk-logistics-2026 charts.
+        score: {
+          excellent: "#10B981",
+          good:      "#84CC16",
+          average:   "#F5B400",
+          weak:      "#F97316",
+          poor:      "#EF4444",
+        },
       },
       fontFamily: {
         display: ["var(--font-display)", "system-ui", "sans-serif"],

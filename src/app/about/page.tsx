@@ -36,7 +36,7 @@ export default function AboutPage() {
     <>
       <PageHeader
         eyebrow="About"
-        title="Designed and engineered by Kapture for operators with bold cargo."
+        title="Designed for operators with bold cargo."
         lede="Kapture Logistics is a deployable system — designed and engineered by Kapture, the studio turning bold ideas into operating businesses across Africa and beyond. Not a company. A solution."
       >
         <div className="flex flex-wrap gap-3">

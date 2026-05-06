@@ -81,9 +81,10 @@ export default function StateOfUKLogisticsPage() {
         </div>
       </section>
 
-      {/* THE FINDING — single big idea, lots of breathing room */}
+      {/* THE FINDING — anchored to the container's left edge so it aligns
+          with the masthead stats above and the chart sections below. */}
       <section className="container-kapture py-24 md:py-32">
-        <div className="mx-auto max-w-4xl">
+        <div className="max-w-4xl">
           <p className="chip">
             <span className="divider-dot" />
             The finding
@@ -92,7 +93,7 @@ export default function StateOfUKLogisticsPage() {
             AI isn't a feature anymore. It's the line between
             survival and irrelevance.
           </h2>
-          <p className="lede mt-6">
+          <p className="lede mt-6 max-w-2xl">
             The top quartile of UK logistics websites have integrated AI for
             search, customer service, route optimisation, content generation,
             and lead qualification. The bottom three quartiles haven't even

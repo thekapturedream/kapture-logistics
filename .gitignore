@@ -34,6 +34,9 @@ yarn-error.log*
 # Vercel
 .vercel
 
+# Local-only key vault — never commit
+SUPABASE_KEYS.md
+
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
@@ -43,3 +46,4 @@ next-env.d.ts
 .vscode
 *.swp
 *.swo
+.env*.local

@@ -256,32 +256,35 @@ export default function StateOfUKLogisticsPage() {
         </div>
       </section>
 
-      {/* CLOSING */}
-      <section className="container-kapture py-24 md:py-32">
-        <div className="relative overflow-hidden rounded-3xl bg-kapture-black px-8 py-16 text-kapture-white md:px-16 md:py-20">
-          <p className="chip border-kapture-ash text-kapture-fog">
-            <span className="divider-dot" />
-            Already below the line?
-          </p>
-          <h2 className="mt-5 max-w-2xl font-display text-[clamp(1.75rem,4vw,3rem)] font-bold leading-tight tracking-tight text-balance">
-            Get your own audit.
-          </h2>
-          <p className="lede mt-4 max-w-xl text-kapture-fog">
-            Kapture audits your site against the same nine dimensions used in
-            the report. Public dashboard delivered in 48 hours.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-x-3 gap-y-4">
-            <Link href="/request-audit" className="btn-yellow whitespace-nowrap text-[18px]">
-              Request audit
-              <ArrowUpRight size={18} />
-            </Link>
-            <Link
-              href="/quote"
-              className="btn-kapture whitespace-nowrap border border-kapture-ash bg-transparent text-[18px] text-kapture-white hover:bg-white hover:text-kapture-black"
-            >
-              Ship a new site
-              <ArrowUpRight size={18} />
-            </Link>
+      {/* CLOSING — outer paper/ink band gives the inner black card a visible
+          frame in both light and dark mode. Mobile padding tightened so the
+          buttons sit at the natural container gutter, not double-indented. */}
+      <section className="bg-kapture-paper dark:bg-kapture-ink">
+        <div className="container-kapture py-16 md:py-32">
+          <div className="relative overflow-hidden rounded-3xl bg-kapture-black px-6 py-12 text-kapture-white md:px-16 md:py-20">
+            <p className="chip border-kapture-ash text-kapture-fog">
+              <span className="divider-dot" />
+              Already below the line?
+            </p>
+            <h2 className="mt-5 max-w-2xl font-display text-[clamp(2rem,6vw,3rem)] font-bold leading-[1.05] tracking-tight text-balance">
+              Get your own audit.
+            </h2>
+            <p className="lede mt-4 max-w-xl text-kapture-fog">
+              Same nine dimensions as the report. Public dashboard in 48 hours.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-x-3 gap-y-4">
+              <Link href="/request-audit" className="btn-yellow whitespace-nowrap text-[18px]">
+                Request audit
+                <ArrowUpRight size={18} />
+              </Link>
+              <Link
+                href="/quote"
+                className="btn-kapture whitespace-nowrap border border-kapture-ash bg-transparent text-[18px] text-kapture-white hover:bg-white hover:text-kapture-black"
+              >
+                Ship a new site
+                <ArrowUpRight size={18} />
+              </Link>
+            </div>
           </div>
         </div>
       </section>

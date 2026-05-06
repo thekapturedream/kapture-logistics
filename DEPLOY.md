@@ -1,4 +1,4 @@
-# Ship Kapture Logistics — GitHub + Vercel + Supabase
+# Ship Kapture Logistics — GitHub + Vercel + Supabase + Resend
 
 This is the path from this folder on your laptop to a live URL.
 
@@ -36,7 +36,18 @@ gh repo create kapture-logistics --public --source=. --remote=origin --push
    - `anon` public key
    - `service_role` secret key
 
-## 4 — Ship to Vercel
+## 4 — Wire email delivery (Resend)
+
+Every form submission emails `studio@thekapture.com` with the lead details. Setup is two steps and stays free for the first 3,000 emails/month:
+
+1. Open [resend.com](https://resend.com) and sign up with `studio@thekapture.com`.
+2. Go to *API Keys → Create API Key*. Name it `kapture-logistics-prod`. Copy the key (starts with `re_`).
+3. Paste it into Vercel as `RESEND_API_KEY`. The app uses Resend's default `onboarding@resend.dev` sender, which works *without domain verification* — emails arrive in your inbox immediately.
+4. Optional: once you verify `thekapture.com` in Resend (DNS records on GoDaddy), update `RESEND_FROM_EMAIL` to `Kapture Logistics <leads@thekapture.com>` for a branded sender.
+
+The lead route also fans out to a webhook if `KAPTURE_LEAD_WEBHOOK_URL` is set (Make.com, Zapier) — useful for dropping leads into Notion, Klaviyo, or a Slack channel automatically.
+
+## 5 — Ship to Vercel
 
 The clean path:
 
@@ -53,10 +64,18 @@ The clean path:
    NEXT_PUBLIC_BRAND_NAME=Kapture Logistics
    NEXT_PUBLIC_PARENT_BRAND_NAME=Kapture
    NEXT_PUBLIC_PARENT_BRAND_URL=https://thekapture.com
-   KAPTURE_LEAD_NOTIFY_EMAIL=hello@thekapture.com
+   KAPTURE_LEAD_NOTIFY_EMAIL=studio@thekapture.com
    ```
 
-5. Deploy.
+5. Add the email vars too:
+
+   ```
+   KAPTURE_LEAD_NOTIFY_EMAIL=studio@thekapture.com
+   RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxxxxxx
+   RESEND_FROM_EMAIL=Kapture Logistics <onboarding@resend.dev>
+   ```
+
+6. Deploy.
 
 CLI alternative (after `vercel login`):
 
@@ -65,6 +84,9 @@ vercel link
 vercel env add NEXT_PUBLIC_SUPABASE_URL production
 vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY production
 vercel env add SUPABASE_SERVICE_ROLE_KEY production
+vercel env add RESEND_API_KEY production
+vercel env add RESEND_FROM_EMAIL production
+vercel env add KAPTURE_LEAD_NOTIFY_EMAIL production
 vercel --prod
 ```
 

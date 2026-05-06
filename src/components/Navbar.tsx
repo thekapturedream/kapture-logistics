@@ -12,6 +12,7 @@ const NAV = [
   { label: "Services", href: "/services" },
   { label: "Solutions", href: "/solutions" },
   { label: "About", href: "/about" },
+  { label: "Careers", href: "/careers" },
   { label: "Insights", href: "/state-of-uk-logistics-2026" },
 ];
 

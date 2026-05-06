@@ -7,31 +7,48 @@ import { getSupabaseAdmin } from "@/lib/supabase";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const LeadSchema = z.object({
-  type: z.enum(["quote", "contact", "newsletter", "partner"]).default("contact"),
-  // Personal details
-  name: z.string().min(1).max(120).optional(),
-  email: z.string().email().max(180),
-  phone: z.string().max(40).optional().or(z.literal("")),
-  company: z.string().max(160).optional().or(z.literal("")),
-  // Freight quote fields (logistics demo flow)
-  origin: z.string().max(160).optional().or(z.literal("")),
-  destination: z.string().max(160).optional().or(z.literal("")),
-  cargo_type: z.string().max(80).optional().or(z.literal("")),
-  weight_kg: z.coerce.number().positive().max(10_000_000).optional().or(z.literal("")),
-  mode: z.string().max(40).optional().or(z.literal("")),
-  pickup_date: z.string().max(40).optional().or(z.literal("")),
-  // Kapture onboarding fields (template buy/customize/custom flow)
-  intent: z.string().max(40).optional().or(z.literal("")),
-  domain: z.string().max(180).optional().or(z.literal("")),
-  industry: z.string().max(80).optional().or(z.literal("")),
-  timeline: z.string().max(80).optional().or(z.literal("")),
-  // General
-  topic: z.string().max(80).optional().or(z.literal("")),
-  service: z.string().max(80).optional().or(z.literal("")),
-  message: z.string().max(4000).optional().or(z.literal("")),
-  source: z.string().max(80).optional().or(z.literal("")),
-});
+/**
+ * Lead validation schema.
+ *
+ * The careers application form has a wide field surface (45+ fields once
+ * role-specific extras are included) and the set is dynamic — a Class 1
+ * driver and a software engineer share only the universal fields. Rather
+ * than enumerate every possible career field in zod, the schema validates
+ * a strict universal core and accepts arbitrary string passthrough for
+ * the rest (capped at 4000 chars per value to prevent abuse).
+ */
+const LeadSchema = z
+  .object({
+    type: z
+      .enum(["quote", "contact", "newsletter", "partner", "careers"])
+      .default("contact"),
+    // Personal details
+    name: z.string().min(1).max(120).optional(),
+    email: z.string().email().max(180),
+    phone: z.string().max(40).optional().or(z.literal("")),
+    company: z.string().max(160).optional().or(z.literal("")),
+    // Freight quote fields (logistics demo flow)
+    origin: z.string().max(160).optional().or(z.literal("")),
+    destination: z.string().max(160).optional().or(z.literal("")),
+    cargo_type: z.string().max(80).optional().or(z.literal("")),
+    weight_kg: z.coerce.number().positive().max(10_000_000).optional().or(z.literal("")),
+    mode: z.string().max(40).optional().or(z.literal("")),
+    pickup_date: z.string().max(40).optional().or(z.literal("")),
+    // Kapture onboarding fields (template buy/customize/custom flow)
+    intent: z.string().max(40).optional().or(z.literal("")),
+    domain: z.string().max(180).optional().or(z.literal("")),
+    industry: z.string().max(80).optional().or(z.literal("")),
+    timeline: z.string().max(80).optional().or(z.literal("")),
+    // General
+    topic: z.string().max(80).optional().or(z.literal("")),
+    service: z.string().max(80).optional().or(z.literal("")),
+    message: z.string().max(4000).optional().or(z.literal("")),
+    source: z.string().max(80).optional().or(z.literal("")),
+    // Careers (universal + open passthrough below)
+    first_name: z.string().max(80).optional().or(z.literal("")),
+    last_name: z.string().max(80).optional().or(z.literal("")),
+  })
+  .catchall(z.string().max(4000));
 
 type Lead = Record<string, unknown>;
 
@@ -67,10 +84,67 @@ const FIELD_LABELS: Record<string, string> = {
   domain:       "Domain",
   industry:     "Industry",
   timeline:     "Timeline",
-  topic:        "Topic",
-  service:      "Service",
+  topic:        "Topic / Department",
+  service:      "Role",
   message:      "Message",
   source:       "Source",
+  // ── Careers — universal ─────────────────────────────────────────────
+  first_name:           "First name",
+  last_name:            "Last name",
+  city:                 "City",
+  postcode:             "Postcode",
+  rtw_status:           "Right to work",
+  ni_number:            "NI number",
+  date_of_birth:        "Date of birth",
+  notice_period:        "Notice period",
+  address_history:      "5-year address history",
+  current_employer:     "Current employer",
+  current_title:        "Current job title",
+  current_dates:        "Current role dates",
+  previous_employers:   "Previous employers",
+  employment_gaps:      "Employment gaps",
+  ref1_name:            "Ref 1 — Name",
+  ref1_company:         "Ref 1 — Company",
+  ref1_title:           "Ref 1 — Title",
+  ref1_email:           "Ref 1 — Email",
+  ref2_name:            "Ref 2 — Name",
+  ref2_company:         "Ref 2 — Company",
+  ref2_title:           "Ref 2 — Title",
+  ref2_email:           "Ref 2 — Email",
+  cv_link:              "CV link",
+  found_via:            "Found us via",
+  referrer_name:        "Referred by",
+  declare_truthful:     "Declared truthful",
+  declare_dvla_check:   "Consent — DVLA check",
+  declare_dbs:          "Consent — DBS",
+  declare_data:         "Consent — data use",
+  // ── Careers — driver fields ────────────────────────────────────────
+  licence_categories:        "Licence categories",
+  licence_issue_country:     "Licence country",
+  licence_points:            "Penalty points",
+  licence_endorsements:      "Endorsements",
+  driver_cpc_card:           "Driver CPC",
+  tacho_card:                "Digital tacho",
+  adr_held:                  "ADR",
+  hiab_held:                 "HIAB",
+  vehicle_experience:        "Vehicle experience",
+  preferred_work_pattern:    "Preferred pattern",
+  // ── Careers — warehouse fields ─────────────────────────────────────
+  flt_licences:              "FLT licences",
+  flt_provider:              "FLT provider / expiry",
+  warehouse_systems:         "WMS / scanner systems",
+  shift_pattern_pref:        "Shift preference",
+  // ── Careers — office / commercial / tech / compliance ──────────────
+  tms_systems:               "TMS systems",
+  fluent_languages:          "Languages",
+  patch:                     "Sales territory",
+  ticket_size:               "Avg contract size",
+  vertical_focus:            "Verticals",
+  primary_stack:             "Primary stack",
+  github:                    "GitHub / portfolio",
+  transport_manager_cpc:     "TM CPC",
+  operator_licence_experience: "Years on O-licence",
+  audit_history:             "Audit history",
 };
 
 function escapeHtml(s: string) {
@@ -82,17 +156,54 @@ function escapeHtml(s: string) {
     .replace(/'/g, "&#39;");
 }
 
+/** Field display priority — universal contact info first, role-specific tail. */
+const FIELD_ORDER = [
+  "type", "service", "topic",
+  "first_name", "last_name", "name",
+  "email", "phone",
+  "city", "postcode", "rtw_status", "date_of_birth", "ni_number", "notice_period",
+  "current_employer", "current_title", "current_dates",
+  "previous_employers", "employment_gaps", "address_history",
+  "licence_categories", "licence_issue_country", "licence_points", "licence_endorsements",
+  "driver_cpc_card", "tacho_card", "adr_held", "hiab_held",
+  "vehicle_experience", "preferred_work_pattern",
+  "flt_licences", "flt_provider", "warehouse_systems", "shift_pattern_pref",
+  "tms_systems", "fluent_languages", "patch", "ticket_size", "vertical_focus",
+  "primary_stack", "github",
+  "transport_manager_cpc", "operator_licence_experience", "audit_history",
+  "ref1_name", "ref1_company", "ref1_title", "ref1_email",
+  "ref2_name", "ref2_company", "ref2_title", "ref2_email",
+  "cv_link", "found_via", "referrer_name",
+  "declare_truthful", "declare_dvla_check", "declare_dbs", "declare_data",
+  "company", "origin", "destination", "cargo_type", "weight_kg", "mode",
+  "pickup_date", "intent", "domain", "industry", "timeline",
+  "message", "source",
+];
+
+function orderEntries(lead: Lead): [string, unknown][] {
+  const filtered = Object.entries(lead).filter(([, v]) => v != null && v !== "");
+  const indexOf = (k: string) => {
+    const i = FIELD_ORDER.indexOf(k);
+    return i === -1 ? FIELD_ORDER.length : i;
+  };
+  return filtered.sort(([a], [b]) => indexOf(a) - indexOf(b));
+}
+
 function buildEmailHtml(lead: Lead, subject: string) {
-  const rows = Object.entries(lead)
-    .filter(([, v]) => v != null && v !== "")
+  const isCareers = lead.type === "careers";
+  const headerEyebrow = isCareers
+    ? "New application · Kapture Careers"
+    : "New lead · Kapture Logistics";
+
+  const rows = orderEntries(lead)
     .map(([k, v]) => {
       const label = FIELD_LABELS[k] ?? k;
       const value = String(v);
-      const isMessage = k === "message";
+      const isLong = k === "message" || k === "address_history" || k === "previous_employers" || k === "employment_gaps" || k === "audit_history" || k === "licence_endorsements";
       return `
         <tr>
-          <td style="padding:10px 14px;border-bottom:1px solid #eaeaea;color:#9A9A9A;font-size:11px;letter-spacing:0.5px;text-transform:uppercase;font-weight:600;width:140px;vertical-align:top;">${escapeHtml(label)}</td>
-          <td style="padding:10px 14px;border-bottom:1px solid #eaeaea;color:#0A0A0A;font-size:14px;line-height:1.55;${isMessage ? "white-space:pre-wrap;" : ""}">${escapeHtml(value)}</td>
+          <td style="padding:10px 14px;border-bottom:1px solid #eaeaea;color:#9A9A9A;font-size:11px;letter-spacing:0.5px;text-transform:uppercase;font-weight:600;width:160px;vertical-align:top;">${escapeHtml(label)}</td>
+          <td style="padding:10px 14px;border-bottom:1px solid #eaeaea;color:#0A0A0A;font-size:14px;line-height:1.55;${isLong ? "white-space:pre-wrap;" : ""}">${escapeHtml(value)}</td>
         </tr>`;
     })
     .join("");
@@ -103,7 +214,7 @@ function buildEmailHtml(lead: Lead, subject: string) {
 <body style="margin:0;padding:32px 16px;background:#f5f5f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#0A0A0A;">
   <div style="max-width:640px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.05);">
     <div style="background:#0A0A0A;color:#ffffff;padding:24px 28px;">
-      <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#FFD400;">New lead · Kapture Logistics</div>
+      <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#FFD400;">${escapeHtml(headerEyebrow)}</div>
       <div style="margin-top:6px;font-size:20px;font-weight:700;">${escapeHtml(subject)}</div>
     </div>
     <table style="width:100%;border-collapse:collapse;">${rows}</table>
@@ -246,8 +357,21 @@ async function sendLeadEmail(lead: Lead) {
   const replyTo = typeof lead.email === "string" ? lead.email : undefined;
 
   const leadType = typeof lead.type === "string" ? lead.type : "lead";
-  const leadName = typeof lead.name === "string" && lead.name ? lead.name : "anonymous";
-  const subject = `New ${leadType} from ${leadName}`;
+  // Synthesise a name from first_name + last_name for careers submissions
+  // — that form doesn't have a single `name` field.
+  const candidateName =
+    (typeof lead.first_name === "string" && lead.first_name) ||
+    (typeof lead.last_name === "string" && lead.last_name)
+      ? [lead.first_name, lead.last_name].filter(Boolean).join(" ")
+      : (typeof lead.name === "string" && lead.name ? lead.name : "anonymous");
+
+  const subject =
+    leadType === "careers"
+      ? `Application — ${typeof lead.service === "string" ? lead.service : "Speculative"} · ${candidateName}`
+      : `New ${leadType} from ${candidateName}`;
+
+  // Tag the inbox prefix so careers vs. logistics is sortable in one glance.
+  const tag = leadType === "careers" ? "[Kapture · Careers]" : "[Kapture]";
 
   try {
     const res = await fetch("https://api.resend.com/emails", {
@@ -259,7 +383,7 @@ async function sendLeadEmail(lead: Lead) {
       body: JSON.stringify({
         from,
         to: [to],
-        subject: `[Kapture] ${subject}`,
+        subject: `${tag} ${subject}`,
         html: buildEmailHtml(lead, subject),
         ...(replyTo ? { reply_to: replyTo } : {}),
       }),
@@ -340,6 +464,19 @@ export async function POST(req: Request) {
   }
 
   const lead = blankToNull(parsed.data);
+
+  // Synthesise a single `name` for careers applications so the rest of
+  // the pipeline (subject lines, supabase, webhook) has a clean handle.
+  if (
+    lead.type === "careers" &&
+    !lead.name &&
+    (typeof lead.first_name === "string" || typeof lead.last_name === "string")
+  ) {
+    const fn = typeof lead.first_name === "string" ? lead.first_name : "";
+    const ln = typeof lead.last_name === "string" ? lead.last_name : "";
+    const joined = [fn, ln].filter(Boolean).join(" ");
+    if (joined) lead.name = joined;
+  }
 
   // Three jobs fire in parallel — none blocks the user response.
   //   1. notify studio inbox (every lead)

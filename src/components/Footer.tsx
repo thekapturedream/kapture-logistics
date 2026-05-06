@@ -38,7 +38,7 @@ const COLS = [
     links: [
       { label: "About Kapture", href: "/about" },
       { label: "Insights", href: "/state-of-uk-logistics-2026" },
-      { label: "Careers", href: "/contact?topic=careers" },
+      { label: "Careers", href: "/careers" },
       { label: "Press", href: "/contact?topic=press" },
       { label: "Contact", href: "/contact" },
     ],

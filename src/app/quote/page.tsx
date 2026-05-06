@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { PageHeader } from "@/components/PageHeader";
 import { QuoteForm } from "@/components/QuoteForm";
 import {
   Check,
@@ -72,16 +71,27 @@ const FEATURES = [
 export default function QuotePage() {
   return (
     <>
-      <PageHeader
-        eyebrow="A heads-up before you continue"
-        title="Ship your website today with Kapture."
-        lede="What you're looking at is a Kapture website template — fully built, ready to be branded for your business. Fill in the short form below, then pick a 15-minute meeting slot. We talk, agree the brief, and your site goes live."
-      />
+      {/* Header + form in one section. No break. */}
+      <section className="relative bg-white dark:bg-kapture-black">
+        <div className="grid-bg" />
+        <div className="container-kapture relative pb-16 pt-20 md:pb-20 md:pt-28">
+          <p className="chip">
+            <span className="divider-dot" />
+            A heads-up before you continue
+          </p>
+          <h1 className="mt-5 max-w-4xl font-display text-hero-lg text-balance text-kapture-black dark:text-kapture-white">
+            Ship your website today with Kapture.
+          </h1>
+          <p className="lede mt-6 max-w-2xl">
+            What you're looking at is a Kapture website template — fully built,
+            ready to be branded for your business. Fill in the short form below,
+            then pick a 15-minute meeting slot. We talk, agree the brief, and
+            your site goes live.
+          </p>
 
-      {/* Form first — full width, no sidebar */}
-      <section className="container-kapture py-16 md:py-20">
-        <div className="mx-auto max-w-3xl">
-          <QuoteForm />
+          <div className="mt-10 max-w-3xl">
+            <QuoteForm />
+          </div>
         </div>
       </section>
 

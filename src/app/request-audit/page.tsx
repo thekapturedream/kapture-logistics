@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Cpu, Globe2, Layers, Search, ShieldCheck } from "lucide-react";
-import { PageHeader } from "@/components/PageHeader";
 import { RequestAuditForm } from "@/components/RequestAuditForm";
 
 export const metadata: Metadata = {
@@ -20,16 +19,27 @@ const DIMENSIONS = [
 export default function RequestAuditPage() {
   return (
     <>
-      <PageHeader
-        eyebrow="Free · 48-hour delivery"
-        title="Request your audit."
-        lede="One Kapture analyst runs the full nine-dimension audit on your site, the same framework used in the State of UK Logistics Websites 2026 report. You get a public dashboard URL with your scores and the prioritised fixes."
-      />
+      {/* Header + form in one section. No break. */}
+      <section className="relative bg-white dark:bg-kapture-black">
+        <div className="grid-bg" />
+        <div className="container-kapture relative pb-16 pt-20 md:pb-20 md:pt-28">
+          <p className="chip">
+            <span className="divider-dot" />
+            Free · 48-hour delivery
+          </p>
+          <h1 className="mt-5 max-w-4xl font-display text-hero-lg text-balance text-kapture-black dark:text-kapture-white">
+            Request your audit.
+          </h1>
+          <p className="lede mt-6 max-w-2xl">
+            One Kapture analyst runs the full nine-dimension audit on your
+            site, the same framework used in the State of UK Logistics Websites
+            2026 report. You get a public dashboard URL with your scores and
+            the prioritised fixes.
+          </p>
 
-      {/* Form first — full width, no sidebar */}
-      <section className="container-kapture py-16 md:py-20">
-        <div className="mx-auto max-w-3xl">
-          <RequestAuditForm />
+          <div className="mt-10 max-w-3xl">
+            <RequestAuditForm />
+          </div>
         </div>
       </section>
 

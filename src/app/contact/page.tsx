@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Mail, Phone, MapPin } from "lucide-react";
-import { PageHeader } from "@/components/PageHeader";
 import { ContactForm } from "@/components/ContactForm";
 import { SITE } from "@/lib/utils";
 
@@ -15,16 +14,26 @@ type Props = { searchParams: { topic?: string } };
 export default function ContactPage({ searchParams }: Props) {
   return (
     <>
-      <PageHeader
-        eyebrow="Contact"
-        title="One team, one inbox, one number to call."
-        lede="Quotes, partnerships, customs, careers, or live shipments — Kapture Logistics responds inside the hour during business hours, faster on urgent lanes."
-      />
+      {/* Header + form in one section. No break. */}
+      <section className="relative bg-white dark:bg-kapture-black">
+        <div className="grid-bg" />
+        <div className="container-kapture relative pb-16 pt-20 md:pb-20 md:pt-28">
+          <p className="chip">
+            <span className="divider-dot" />
+            Contact
+          </p>
+          <h1 className="mt-5 max-w-4xl font-display text-hero-lg text-balance text-kapture-black dark:text-kapture-white">
+            One team, one inbox, one number to call.
+          </h1>
+          <p className="lede mt-6 max-w-2xl">
+            Quotes, partnerships, customs, careers, or live shipments — Kapture
+            Logistics responds inside the hour during business hours, faster on
+            urgent lanes.
+          </p>
 
-      {/* Form first — full width, no sidebar */}
-      <section className="container-kapture py-16 md:py-20">
-        <div className="mx-auto max-w-3xl">
-          <ContactForm topic={searchParams.topic} />
+          <div className="mt-10 max-w-3xl">
+            <ContactForm topic={searchParams.topic} />
+          </div>
         </div>
       </section>
 

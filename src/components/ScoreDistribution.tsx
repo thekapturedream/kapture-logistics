@@ -46,9 +46,8 @@ export function ScoreDistribution() {
             <div className="relative h-7 flex-1 overflow-hidden rounded-full bg-kapture-paper dark:bg-kapture-ash">
               <motion.div
                 initial={{ width: 0 }}
-                whileInView={{ width: `${(b.percent / max) * 100}%` }}
-                viewport={{ once: true, margin: "-20%" }}
-                transition={{ duration: 1.1, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+                animate={{ width: `${(b.percent / max) * 100}%` }}
+                transition={{ duration: 1.1, delay: 0.2 + i * 0.1, ease: [0.16, 1, 0.3, 1] }}
                 className={`h-full ${b.tone}`}
               />
               <span className="absolute left-3 top-1/2 -translate-y-1/2 font-mono text-[11px] font-semibold text-kapture-black mix-blend-difference">

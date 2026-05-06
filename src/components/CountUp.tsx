@@ -27,7 +27,9 @@ export function CountUp({
   className,
 }: Props) {
   const ref = React.useRef<HTMLSpanElement | null>(null);
-  const inView = useInView(ref, { once: true, margin: "-30%" });
+  // Trigger as soon as the element edges into the viewport. Earlier negative
+  // margins were preventing the count from firing on first paint.
+  const inView = useInView(ref, { once: true, amount: 0.1 });
   const motionValue = useMotionValue(0);
   const rounded = useTransform(motionValue, (v) =>
     decimals > 0 ? v.toFixed(decimals) : Math.round(v).toLocaleString("en-GB"),

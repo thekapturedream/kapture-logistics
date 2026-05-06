@@ -12,7 +12,7 @@ const NAV = [
   { label: "Services", href: "/services" },
   { label: "Solutions", href: "/solutions" },
   { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
+  { label: "Insights", href: "/state-of-uk-logistics-2026" },
 ];
 
 export function Navbar() {
@@ -86,16 +86,15 @@ export function Navbar() {
         <div className="flex items-center gap-3 md:gap-4">
           <ThemeToggleInline overHero={overHero} />
           <Link
-            href="/quote"
+            href="/contact"
             className={cn(
               // Navbar-only override: 40px height, narrower padding, smaller text.
-              // The min-h-0 cancels the global .btn-kapture 50px floor so Ship
-              // Now sits clean against the 40px circular theme toggle beside it.
+              // The min-h-0 cancels the global .btn-kapture 50px floor.
               "hidden md:inline-flex btn-kapture !min-h-0 h-10 px-4 text-xs transition-colors",
               cta,
             )}
           >
-            Ship Now
+            Contact
             <ArrowUpRight size={14} />
           </Link>
           <button
@@ -123,11 +122,11 @@ export function Navbar() {
               </Link>
             ))}
             <Link
-              href="/quote"
+              href="/contact"
               onClick={() => setOpen(false)}
               className="btn-primary mt-2 w-full justify-center"
             >
-              Ship Now
+              Contact
               <ArrowUpRight size={16} />
             </Link>
           </div>

@@ -47,23 +47,17 @@ export default function StateOfUKLogisticsPage() {
             </span>
           </h1>
 
-          <p className="mt-8 max-w-2xl text-balance text-base text-white/75 md:text-lg">
-            We audited 200 UK logistics brands across nine dimensions. The data
-            shows a binary split — companies that integrated AI are pulling
-            away from the rest at a rate the laggards can't close.
-          </p>
-
           <div className="mt-10 flex flex-wrap gap-3">
-            <a href="#download" className="btn-yellow whitespace-nowrap">
+            <a href="#download" className="btn-yellow whitespace-nowrap text-[18px]">
               Get report
-              <ArrowUpRight size={16} />
+              <ArrowUpRight size={18} />
             </a>
             <Link
               href="/request-audit"
-              className="btn-kapture whitespace-nowrap border border-kapture-ash bg-transparent text-kapture-white hover:bg-white hover:text-kapture-black"
+              className="btn-kapture whitespace-nowrap border border-kapture-ash bg-transparent text-[18px] text-kapture-white hover:bg-white hover:text-kapture-black"
             >
               Request audit
-              <ArrowUpRight size={16} />
+              <ArrowUpRight size={18} />
             </Link>
           </div>
         </div>
@@ -72,7 +66,7 @@ export default function StateOfUKLogisticsPage() {
       {/* MASTHEAD STATS — animated counters, big numbers, no body copy */}
       <section className="border-y border-kapture-ash bg-kapture-black text-kapture-white">
         <div className="container-kapture grid grid-cols-2 gap-y-12 py-16 md:grid-cols-4 md:py-20">
-          <Stat label="Brands audited" value={<CountUp to={200} />} />
+          <Stat label="Companies audited" value={<CountUp to={200} />} />
           <Stat label="Failing mobile speed" value={<CountUp to={63} suffix="%" />} />
           <Stat label="Invisible to AI search" value={<CountUp to={82} suffix="%" />} />
           <Stat

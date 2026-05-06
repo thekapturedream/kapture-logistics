@@ -54,18 +54,16 @@ export function AiAdoptionChart() {
                 <div className="relative h-4 overflow-hidden rounded-full bg-kapture-paper dark:bg-kapture-ash">
                   <motion.div
                     initial={{ width: 0 }}
-                    whileInView={{ width: `${(m.ai / max) * 100}%` }}
-                    viewport={{ once: true, margin: "-20%" }}
-                    transition={{ duration: 1.1, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
+                    animate={{ width: `${(m.ai / max) * 100}%` }}
+                    transition={{ duration: 1.1, delay: 0.2 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
                     className="h-full bg-kapture-yellow"
                   />
                 </div>
                 <div className="relative h-4 overflow-hidden rounded-full bg-kapture-paper dark:bg-kapture-ash">
                   <motion.div
                     initial={{ width: 0 }}
-                    whileInView={{ width: `${(m.traditional / max) * 100}%` }}
-                    viewport={{ once: true, margin: "-20%" }}
-                    transition={{ duration: 1.1, delay: i * 0.08 + 0.1, ease: [0.16, 1, 0.3, 1] }}
+                    animate={{ width: `${(m.traditional / max) * 100}%` }}
+                    transition={{ duration: 1.1, delay: 0.3 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
                     className="h-full bg-kapture-mist/60"
                   />
                 </div>

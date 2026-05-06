@@ -30,11 +30,11 @@ export function LegalLayout({ title, lastUpdated, intro, children }: LayoutProps
         title={title}
         lede={intro}
       />
+      {/* Body anchored to the same container left edge as the page header.
+          No mx-auto — content alignment must stay consistent vertically. */}
       <section className="container-kapture py-16 md:py-24">
-        <div className="mx-auto max-w-3xl">
-          <div className="space-y-14 text-kapture-smoke dark:text-kapture-fog">
-            {children}
-          </div>
+        <div className="max-w-3xl space-y-14 text-kapture-smoke dark:text-kapture-fog">
+          {children}
         </div>
       </section>
     </>

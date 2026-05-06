@@ -112,7 +112,7 @@ export function Hero() {
             (sm:order-none, sm:mt-12) so the centred composition is
             preserved at desktop sizes.
       */}
-      <div className="container-kapture relative flex min-h-[100svh] flex-col pb-8 pt-24 sm:block sm:min-h-0 sm:pb-24 md:pt-32 lg:pt-40">
+      <div className="container-kapture relative flex min-h-[100svh] flex-col pb-8 pt-24 sm:block sm:min-h-[100vh] sm:pb-24 md:pt-32 lg:pt-40">
         <div className="order-2 mx-auto max-w-4xl text-center sm:order-none">
           <motion.h1
             initial={{ opacity: 0, y: 12 }}

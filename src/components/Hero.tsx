@@ -214,6 +214,20 @@ export function Hero() {
             )}
           </div>
 
+          {/* Datalists — power browser autocomplete with the popular-lane
+              endpoints so typing surfaces real suggestions. The browser will
+              also remember user-entered values across visits. */}
+          <datalist id="kapture-pickup-suggestions">
+            {Array.from(new Set(POPULAR_LANES.map((l) => l.split("→")[0].trim()))).map((p) => (
+              <option key={p} value={p} />
+            ))}
+          </datalist>
+          <datalist id="kapture-dropoff-suggestions">
+            {Array.from(new Set(POPULAR_LANES.map((l) => l.split("→")[1].trim()))).map((d) => (
+              <option key={d} value={d} />
+            ))}
+          </datalist>
+
           {/* Field grid — pickup is always visible; the rest reveal on expand */}
           <div className="grid gap-2 md:grid-cols-[1fr,1fr,auto,auto]">
             <label className="relative">
@@ -222,6 +236,9 @@ export function Hero() {
               <input
                 type="text"
                 required
+                name="kapture-origin"
+                autoComplete="on"
+                list="kapture-pickup-suggestions"
                 value={origin}
                 onChange={(e) => setOrigin(e.target.value)}
                 onFocus={expand}
@@ -236,6 +253,9 @@ export function Hero() {
               <input
                 type="text"
                 required={expanded}
+                name="kapture-destination"
+                autoComplete="on"
+                list="kapture-dropoff-suggestions"
                 value={destination}
                 onChange={(e) => setDestination(e.target.value)}
                 placeholder="Drop-off location"
@@ -261,9 +281,12 @@ export function Hero() {
               </select>
             </label>
 
+            {/* Hero-only override: button picks up the 10px field-corner radius
+                instead of the global pill so it sits flush with the inputs.
+                Min-h reset cancels the .btn-kapture 50px floor. */}
             <button
               type="submit"
-              className="btn-yellow h-14 px-7 text-base"
+              className="btn-yellow h-14 !min-h-0 !rounded-kapture px-7 text-base"
             >
               Ship now
               <ArrowRight size={18} />

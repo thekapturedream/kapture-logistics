@@ -2,21 +2,32 @@
 
 import * as React from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, CheckCircle2, AlertTriangle, Download } from "lucide-react";
+import { ArrowRight, CheckCircle2, AlertTriangle } from "lucide-react";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
-const ROLES = [
-  "Founder / MD / CEO",
-  "Marketing lead",
-  "Operations lead",
-  "Sales lead",
-  "Investor / analyst",
-  "Press / media",
+const SECTORS = [
+  "Freight forwarding",
+  "Road haulage / HGV",
+  "3PL / contract logistics",
+  "Warehousing",
+  "Last-mile / courier",
+  "Customs & trade",
+  "Cold chain / pharma",
+  "Project cargo",
+  "Air freight",
+  "Ocean freight",
   "Other",
 ];
 
-export function StateOfUkForm() {
+const URGENCY = [
+  "ASAP — within 7 days",
+  "This month",
+  "Next quarter",
+  "Just exploring",
+];
+
+export function RequestAuditForm() {
   const [status, setStatus] = React.useState<Status>("idle");
   const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
   const formRef = React.useRef<HTMLFormElement>(null);
@@ -25,7 +36,6 @@ export function StateOfUkForm() {
     e.preventDefault();
     setStatus("submitting");
     setErrorMsg(null);
-
     const fd = new FormData(e.currentTarget);
     const payload = Object.fromEntries(fd.entries());
 
@@ -35,16 +45,14 @@ export function StateOfUkForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...payload,
-          type: "newsletter",
-          source: "state-of-uk-logistics-2026",
+          type: "quote",
+          source: "request-audit",
         }),
       });
-
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         throw new Error(data?.error || "Could not submit. Please try again.");
       }
-
       setStatus("success");
       formRef.current?.reset();
     } catch (err) {
@@ -62,15 +70,15 @@ export function StateOfUkForm() {
       >
         <CheckCircle2 className="text-kapture-amber" size={28} />
         <h3 className="mt-4 font-display text-2xl font-bold tracking-tight">
-          The report is on its way.
+          Audit request received.
         </h3>
         <p className="mt-2 text-sm text-kapture-smoke dark:text-kapture-fog md:text-base">
-          Check your inbox in the next few minutes — the State of UK Logistics
-          Websites 2026 download link will land there. We'll also drop you a
-          quarterly note with the rolling Q1, Q2, Q3, Q4 updates.
+          A Kapture analyst will run your full nine-dimension audit and email
+          your public dashboard URL within 48 hours. We'll also send a
+          15-minute call link if you want to walk through the findings live.
         </p>
         <p className="mt-4 text-xs uppercase tracking-wider text-kapture-mist">
-          If it doesn't arrive in 5 minutes, check spam or email studio@thekapture.com
+          Confirmation email on its way to your inbox.
         </p>
       </motion.div>
     );
@@ -82,30 +90,60 @@ export function StateOfUkForm() {
       onSubmit={onSubmit}
       className="rounded-2xl border bg-white p-6 shadow-kapture-soft dark:border-kapture-ash dark:bg-kapture-coal md:p-8"
     >
-      <p className="label">Where to send the report</p>
+      <p className="label">1. Your business</p>
+      <div className="grid gap-5 md:grid-cols-2">
+        <Field label="Company name *" name="company" required />
+        <Field label="Website *" name="domain" placeholder="yourbusiness.co.uk" required />
+        <label>
+          <span className="label">Sector *</span>
+          <select className="field" name="industry" defaultValue={SECTORS[0]} required>
+            {SECTORS.map((s) => <option key={s}>{s}</option>)}
+          </select>
+        </label>
+        <Field label="Headquarters city" name="origin" placeholder="London, Manchester, Felixstowe…" />
+      </div>
 
+      <p className="label mt-8">2. About you</p>
       <div className="grid gap-5 md:grid-cols-2">
         <Field label="Full name *" name="name" required />
         <Field label="Work email *" name="email" type="email" required />
-        <Field label="Company *" name="company" required />
+        <Field label="Role" name="service" placeholder="Founder, MD, Marketing lead…" />
+        <Field label="Phone" name="phone" type="tel" />
+      </div>
+
+      <p className="label mt-8">3. The brief</p>
+      <div className="grid gap-5">
         <label>
-          <span className="label">Your role</span>
-          <select className="field" name="topic" defaultValue={ROLES[0]}>
-            {ROLES.map((r) => <option key={r}>{r}</option>)}
+          <span className="label">When do you need this?</span>
+          <select className="field" name="timeline" defaultValue={URGENCY[1]}>
+            {URGENCY.map((u) => <option key={u}>{u}</option>)}
           </select>
+        </label>
+        <label>
+          <span className="label">Three competitors we should benchmark you against</span>
+          <input className="field" type="text" name="topic" placeholder="brand-a.com, brand-b.com, brand-c.com" />
+        </label>
+        <label>
+          <span className="label">What are you trying to find out? (optional)</span>
+          <textarea
+            name="message"
+            rows={4}
+            className="field"
+            placeholder="e.g. why our tender win-rate is dropping, why mobile bounces are high, where we sit on AI search…"
+          />
         </label>
       </div>
 
-      <div className="mt-6 flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
+      <div className="mt-8 flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
         <p className="text-xs text-kapture-mist">
-          We'll email the report + a short quarterly digest. Unsubscribe anytime.
+          Free audit. By submitting you agree to be contacted by Kapture Studio.
         </p>
         <button
           type="submit"
           disabled={status === "submitting"}
           className="btn-yellow whitespace-nowrap text-base font-bold disabled:opacity-60"
         >
-          {status === "submitting" ? "Sending…" : "Get report"}
+          {status === "submitting" ? "Sending…" : "Request audit"}
           <ArrowRight size={16} />
         </button>
       </div>
@@ -124,18 +162,18 @@ function Field({
   name,
   type = "text",
   required,
+  placeholder,
 }: {
   label: string;
   name: string;
   type?: string;
   required?: boolean;
+  placeholder?: string;
 }) {
   return (
     <label>
       <span className="label">{label}</span>
-      <input className="field" type={type} name={name} required={required} />
+      <input className="field" type={type} name={name} required={required} placeholder={placeholder} />
     </label>
   );
 }
-
-export { Download };

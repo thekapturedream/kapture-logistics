@@ -2,9 +2,36 @@
 
 import * as React from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, CheckCircle2, AlertTriangle, Download } from "lucide-react";
+import { CheckCircle2, AlertTriangle, Download } from "lucide-react";
 
 type Status = "idle" | "submitting" | "success" | "error";
+
+/**
+ * The report PDF lives in /public so it's served straight from the site
+ * root. Update this constant if the filename ever changes — the API
+ * route's email-attachment lookup also reads from the same path.
+ */
+const REPORT_URL = "/state-of-uk-logistics-2026.pdf";
+const REPORT_FILENAME = "Kapture-State-of-UK-Logistics-2026.pdf";
+
+/**
+ * Trigger an immediate browser download by synthesising an <a download>
+ * click. Modern browsers honour this when called inside a user-initiated
+ * event handler (which onSubmit is), so no popup blocker fires. Same-
+ * origin assets are downloaded; cross-origin links would just navigate.
+ */
+function triggerPdfDownload() {
+  if (typeof document === "undefined") return;
+  const a = document.createElement("a");
+  a.href = REPORT_URL;
+  a.download = REPORT_FILENAME;
+  a.rel = "noopener";
+  // Keep the element off-screen and unfocusable so it never flickers.
+  a.style.display = "none";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
 
 const ROLES = [
   "Founder / MD / CEO",
@@ -45,6 +72,11 @@ export function StateOfUkForm() {
         throw new Error(data?.error || "Could not submit. Please try again.");
       }
 
+      // Fire the download alongside the API success — keeps the existing
+      // email + Resend + HubSpot fan-out path running while giving the
+      // visitor an immediate file in their browser.
+      triggerPdfDownload();
+
       setStatus("success");
       formRef.current?.reset();
     } catch (err) {
@@ -62,15 +94,27 @@ export function StateOfUkForm() {
       >
         <CheckCircle2 className="text-kapture-amber" size={28} />
         <h3 className="mt-4 font-display text-2xl font-bold tracking-tight">
-          The report is on its way.
+          Your download has started.
         </h3>
         <p className="mt-2 text-sm text-kapture-smoke dark:text-kapture-fog md:text-base">
-          Check your inbox in the next few minutes — the State of UK Logistics
-          Websites 2026 download link will land there. We'll also drop you a
-          quarterly note with the rolling Q1, Q2, Q3, Q4 updates.
+          The State of UK Logistics Websites 2026 PDF is downloading to your
+          device now. We've also emailed you a copy and added you to the
+          quarterly digest covering the rolling Q1, Q2, Q3, Q4 updates.
         </p>
+        {/* Manual fallback — Safari and a small set of mobile browsers
+            occasionally suppress the programmatic .click() download. The
+            visible button + native href guarantees the user can always
+            retrieve the file with one tap. */}
+        <a
+          href={REPORT_URL}
+          download={REPORT_FILENAME}
+          className="btn-yellow mt-6 whitespace-nowrap text-sm font-bold"
+        >
+          <Download size={16} />
+          Download again
+        </a>
         <p className="mt-4 text-xs uppercase tracking-wider text-kapture-mist">
-          If it doesn't arrive in 5 minutes, check spam or email studio@thekapture.com
+          If the email doesn't arrive in 5 minutes, check spam or email studio@thekapture.com
         </p>
       </motion.div>
     );
@@ -98,15 +142,15 @@ export function StateOfUkForm() {
 
       <div className="mt-6 flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
         <p className="text-xs text-kapture-mist">
-          We'll email the report + a short quarterly digest. Unsubscribe anytime.
+          PDF downloads on submit. We'll also email you the report + the quarterly digest. Unsubscribe anytime.
         </p>
         <button
           type="submit"
           disabled={status === "submitting"}
           className="btn-yellow whitespace-nowrap text-base font-bold disabled:opacity-60"
         >
-          {status === "submitting" ? "Sending…" : "Get report"}
-          <ArrowRight size={16} />
+          {status === "submitting" ? "Sending…" : "Download report"}
+          <Download size={16} />
         </button>
       </div>
 
@@ -138,4 +182,3 @@ function Field({
   );
 }
 
-export { Download };

@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   title: "About — Designed and engineered by Kapture",
   description:
     "Kapture Logistics is a deployable freight and supply-chain system designed and engineered by Kapture — the studio turning bold ideas into operating businesses.",
+  alternates: { canonical: "/about" },
+
 };
 
 const PRINCIPLES = [

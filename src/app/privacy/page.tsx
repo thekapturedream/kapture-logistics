@@ -6,6 +6,8 @@ import { SITE } from "@/lib/utils";
 export const metadata: Metadata = {
   title: "Privacy policy",
   description: `How Kapture Logistics collects, uses, and protects your data. UK GDPR aligned.`,
+  alternates: { canonical: "/privacy" },
+
 };
 
 const LAST_UPDATED = "12 May 2026";

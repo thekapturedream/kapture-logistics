@@ -6,6 +6,8 @@ import { SITE } from "@/lib/utils";
 export const metadata: Metadata = {
   title: "Refund policy",
   description: `When and how Kapture Studio issues refunds for engagements.`,
+  alternates: { canonical: "/refunds" },
+
 };
 
 const LAST_UPDATED = "12 May 2026";

@@ -8,6 +8,8 @@ export const metadata: Metadata = {
   title: "Solutions — Industries we move",
   description:
     "Industry-tuned logistics: retail, manufacturing, mining, healthcare, agriculture, and tech. Lanes, capacity, and SLAs shaped to your sector.",
+  alternates: { canonical: "/solutions" },
+
 };
 
 export default function SolutionsPage() {

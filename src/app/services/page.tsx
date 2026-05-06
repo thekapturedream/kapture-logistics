@@ -4,11 +4,13 @@ import { ArrowUpRight, Layers, Truck, PackageCheck, Globe2, Plane, Radar, Ship }
 import { PageHeader } from "@/components/PageHeader";
 import { ImageStrip } from "@/components/ImageStrip";
 import { CTA } from "@/components/CTA";
+import { ServiceSchema, BreadcrumbSchema } from "@/components/StructuredData";
 
 export const metadata: Metadata = {
   title: "Services — Freight, Multi-modal, Last-mile, Customs",
   description:
     "Managed transportation, multi-modal capacity, supply chain, customs, and last-mile delivery — built into one Kapture operating layer.",
+  alternates: { canonical: "/services" },
 };
 
 const SERVICES = [
@@ -73,6 +75,20 @@ const SERVICES = [
 export default function ServicesPage() {
   return (
     <>
+      <ServiceSchema
+        services={SERVICES.map((s) => ({
+          name: s.eyebrow,
+          description: s.body,
+          slug: s.id,
+        }))}
+      />
+      <BreadcrumbSchema
+        items={[
+          { name: "Home", url: "/" },
+          { name: "Services", url: "/services" },
+        ]}
+      />
+
       <PageHeader
         eyebrow="Services"
         title="Freight & logistics services, designed to be deployed."

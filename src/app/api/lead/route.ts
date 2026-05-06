@@ -267,10 +267,10 @@ function buildSubscriberEmailHtml(firstName: string) {
       <table cellpadding="0" cellspacing="0" border="0" style="margin:18px 0;">
         <tr>
           <td style="padding-right:8px;">
-            <a href="https://kapture-logistics.vercel.app/request-audit" style="display:inline-block;background:#FFD400;color:#0A0A0A;text-decoration:none;font-weight:700;padding:12px 20px;border-radius:9999px;font-size:13px;">Request a free audit →</a>
+            <a href="https://logistics.thekapture.com/request-audit" style="display:inline-block;background:#FFD400;color:#0A0A0A;text-decoration:none;font-weight:700;padding:12px 20px;border-radius:9999px;font-size:13px;">Request a free audit →</a>
           </td>
           <td>
-            <a href="https://kapture-logistics.vercel.app/quote" style="display:inline-block;background:#0A0A0A;color:#ffffff;text-decoration:none;font-weight:700;padding:12px 20px;border-radius:9999px;font-size:13px;">Ship a new website →</a>
+            <a href="https://logistics.thekapture.com/quote" style="display:inline-block;background:#0A0A0A;color:#ffffff;text-decoration:none;font-weight:700;padding:12px 20px;border-radius:9999px;font-size:13px;">Ship a new website →</a>
           </td>
         </tr>
       </table>
@@ -409,6 +409,100 @@ async function sendLeadEmail(lead: Lead) {
 /* Optional fan-out hooks                                                  */
 /* ────────────────────────────────────────────────────────────────────── */
 
+/**
+ * HubSpot Forms API — push every lead to the free HubSpot CRM.
+ *
+ * Configure via env vars:
+ *   HUBSPOT_PORTAL_ID         — your HubSpot portal / hub ID (numeric)
+ *   HUBSPOT_FORM_ID_DEFAULT   — fallback form GUID for any lead type
+ *   HUBSPOT_FORM_ID_QUOTE     — (optional) override for quote leads
+ *   HUBSPOT_FORM_ID_CONTACT   — (optional) override for contact leads
+ *   HUBSPOT_FORM_ID_NEWSLETTER — (optional) override for newsletter signups
+ *   HUBSPOT_FORM_ID_CAREERS   — (optional) override for careers applications
+ *
+ * The HubSpot Forms API is unauthenticated — no API key required, the
+ * portal+form GUID combination is the auth surface. Free CRM tier
+ * accepts unlimited form submissions.
+ *
+ * Reference: https://legacydocs.hubspot.com/docs/methods/forms/submit_form
+ */
+async function pushToHubSpot(lead: Lead) {
+  const portalId = process.env.HUBSPOT_PORTAL_ID;
+  if (!portalId) return { ok: false, reason: "no-portal" as const };
+
+  const leadType = typeof lead.type === "string" ? lead.type : "contact";
+  const formId =
+    (leadType === "quote" && process.env.HUBSPOT_FORM_ID_QUOTE) ||
+    (leadType === "contact" && process.env.HUBSPOT_FORM_ID_CONTACT) ||
+    (leadType === "newsletter" && process.env.HUBSPOT_FORM_ID_NEWSLETTER) ||
+    (leadType === "careers" && process.env.HUBSPOT_FORM_ID_CAREERS) ||
+    process.env.HUBSPOT_FORM_ID_DEFAULT;
+
+  if (!formId) return { ok: false, reason: "no-form" as const };
+
+  // Map our schema to HubSpot's standard contact properties. Anything
+  // not in this map is dropped — HubSpot rejects unknown fields by
+  // default. Custom HubSpot properties can be added by extending the
+  // mapping below to match their internal names.
+  const HUBSPOT_FIELDS: Record<string, string> = {
+    email:        "email",
+    name:         "fullname",
+    first_name:   "firstname",
+    last_name:    "lastname",
+    phone:        "phone",
+    company:      "company",
+    domain:       "website",
+    industry:     "industry",
+    city:         "city",
+    postcode:     "zip",
+    message:      "message",
+    service:      "kapture_role",
+    topic:        "kapture_topic",
+    source:       "kapture_source",
+    notice_period: "kapture_notice_period",
+    cv_link:      "kapture_cv_link",
+  };
+
+  const fields = Object.entries(lead)
+    .filter(([k, v]) => HUBSPOT_FIELDS[k] && v != null && v !== "")
+    .map(([k, v]) => ({
+      name: HUBSPOT_FIELDS[k],
+      value: String(v),
+    }));
+
+  if (fields.length === 0 || !lead.email) {
+    return { ok: false, reason: "no-email" as const };
+  }
+
+  try {
+    const res = await fetch(
+      `https://api.hsforms.com/submissions/v3/integration/submit/${portalId}/${formId}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fields,
+          context: {
+            pageUri: typeof lead.source === "string" ? `${SITE_URL}${lead.source}` : SITE_URL,
+            pageName: leadType,
+          },
+        }),
+      },
+    );
+    if (!res.ok) {
+      const errBody = await res.text().catch(() => "(no body)");
+      console.error(`[lead] HubSpot rejected. status=${res.status} body=${errBody}`);
+      return { ok: false, reason: "send-failed" as const };
+    }
+    return { ok: true as const };
+  } catch (err) {
+    console.error("[lead] HubSpot send exception:", err);
+    return { ok: false, reason: "exception" as const };
+  }
+}
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://logistics.thekapture.com";
+
 async function notifyWebhook(lead: Lead) {
   const url = process.env.KAPTURE_LEAD_WEBHOOK_URL;
   if (!url) return;
@@ -487,6 +581,7 @@ export async function POST(req: Request) {
   const [emailResult] = await Promise.all([
     sendLeadEmail(lead),
     notifyWebhook(lead),
+    pushToHubSpot(lead),
     isReportSignup ? sendReportToSubscriber(lead) : Promise.resolve(),
   ]);
 

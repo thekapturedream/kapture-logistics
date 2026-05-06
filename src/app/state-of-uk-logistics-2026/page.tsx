@@ -6,22 +6,39 @@ import { CountUp } from "@/components/CountUp";
 import { ScoreDistribution } from "@/components/ScoreDistribution";
 import { AiAdoptionChart } from "@/components/AiAdoptionChart";
 import { LiveTicker } from "@/components/LiveTicker";
+import { ArticleSchema, BreadcrumbSchema } from "@/components/StructuredData";
 
 export const metadata: Metadata = {
   title: "State of UK Logistics Websites 2026 — Free Report",
   description:
     "200 UK logistics brands audited. AI is the line between survivors and casualties. Free 64-page report from Kapture Studio.",
+  alternates: { canonical: "/state-of-uk-logistics-2026" },
   openGraph: {
     title: "State of UK Logistics Websites 2026",
     description:
       "AI is the new dividing line in UK logistics. The data on 200 brands.",
     type: "article",
+    images: ["/og-state-of-uk.png"],
   },
 };
 
 export default function StateOfUKLogisticsPage() {
   return (
     <>
+      <ArticleSchema
+        headline="State of UK Logistics Websites 2026"
+        description="200 UK logistics brands audited across 9 dimensions. The AI thesis. The grade curve. The seven prioritised moves. Free 64-page report from Kapture Studio."
+        image="/og-state-of-uk.png"
+        datePublished="2026-01-15T08:00:00.000Z"
+        dateModified={new Date().toISOString()}
+        url="/state-of-uk-logistics-2026"
+      />
+      <BreadcrumbSchema
+        items={[
+          { name: "Home", url: "/" },
+          { name: "Insights", url: "/state-of-uk-logistics-2026" },
+        ]}
+      />
       {/* HERO — magazine cover energy */}
       <section className="relative isolate overflow-hidden bg-kapture-black text-kapture-white">
         <div

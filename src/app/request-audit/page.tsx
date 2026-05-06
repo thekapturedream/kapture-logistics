@@ -6,6 +6,8 @@ export const metadata: Metadata = {
   title: "Request a free audit — Kapture Studio",
   description:
     "Get your logistics website scored against the nine dimensions used in the State of UK Logistics Websites 2026 report. Public dashboard delivered in 48 hours.",
+  alternates: { canonical: "/request-audit" },
+
 };
 
 // Six dimensions (of the nine in the full audit) — chosen to land perfectly

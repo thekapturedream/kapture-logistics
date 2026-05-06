@@ -16,6 +16,7 @@ import {
 import { PageHeader } from "@/components/PageHeader";
 import { CTA } from "@/components/CTA";
 import { CareersApplicationForm } from "@/components/CareersApplicationForm";
+import { JobPostingSchema, BreadcrumbSchema } from "@/components/StructuredData";
 import type { Role } from "@/lib/roles";
 import { ROLES, getAllSlugs, getRole } from "@/lib/roles";
 
@@ -49,8 +50,25 @@ export default function RolePage({ params }: Props) {
     (r) => r.slug !== role.slug && r.department === role.department,
   ).slice(0, 3);
 
+  // Stable posted date — Google Jobs requires an ISO date and validates
+  // that validThrough is in the future. Using a fixed window per build
+  // keeps the listing visible for ~60 days from each deploy.
+  const datePosted = new Date().toISOString();
+
   return (
     <>
+      {/* Google Jobs schema — surfaces this role in the dedicated Jobs
+          panel above traditional search results when users query for the
+          role title plus a UK location. */}
+      <JobPostingSchema role={role} datePosted={datePosted} />
+      <BreadcrumbSchema
+        items={[
+          { name: "Home", url: "/" },
+          { name: "Careers", url: "/careers" },
+          { name: role.title, url: `/careers/${role.slug}` },
+        ]}
+      />
+
       <PageHeader
         eyebrow={`${role.department} · ${role.status}`}
         title={role.title}

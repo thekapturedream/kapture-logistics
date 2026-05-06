@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   title: "Careers — Recruit your team effortlessly",
   description:
     "Custom UK logistics application forms — driver, warehouse, transport office, commercial, leadership and compliance. Conditional logic baked in. Submissions wired to your inbox.",
+  alternates: { canonical: "/careers" },
+
 };
 
 /**

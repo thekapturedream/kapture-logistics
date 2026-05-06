@@ -16,6 +16,8 @@ export const metadata: Metadata = {
   title: "Ship your website today with Kapture",
   description:
     "Heads up — what you're looking at is a Kapture website template, ready to be branded for your business. Tell us about you, then book a 15-minute meeting to ship it.",
+  alternates: { canonical: "/quote" },
+
 };
 
 const STEPS = [

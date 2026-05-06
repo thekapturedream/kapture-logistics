@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { ContactForm } from "@/components/ContactForm";
+import { LocalBusinessSchema, BreadcrumbSchema } from "@/components/StructuredData";
 import { SITE } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Contact — Talk to Kapture Logistics",
   description:
     "Reach the Kapture Logistics team. Quotes, partnerships, careers, customs, and tracking — one inbox, one team.",
+  alternates: { canonical: "/contact" },
 };
 
 type Props = { searchParams: { topic?: string } };
@@ -14,6 +16,14 @@ type Props = { searchParams: { topic?: string } };
 export default function ContactPage({ searchParams }: Props) {
   return (
     <>
+      <LocalBusinessSchema />
+      <BreadcrumbSchema
+        items={[
+          { name: "Home", url: "/" },
+          { name: "Contact", url: "/contact" },
+        ]}
+      />
+
       {/* Header + form in one section. No break. */}
       <section className="relative bg-white dark:bg-kapture-black">
         <div className="grid-bg" />

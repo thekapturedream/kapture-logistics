@@ -6,6 +6,8 @@ import { SITE } from "@/lib/utils";
 export const metadata: Metadata = {
   title: "Terms & conditions",
   description: `The terms that apply when you use the Kapture Logistics website or engage Kapture Studio for services.`,
+  alternates: { canonical: "/terms" },
+
 };
 
 const LAST_UPDATED = "12 May 2026";

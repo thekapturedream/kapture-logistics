@@ -6,6 +6,8 @@ import { SITE } from "@/lib/utils";
 export const metadata: Metadata = {
   title: "Cookies policy",
   description: `What cookies the Kapture Logistics website uses and how to manage them.`,
+  alternates: { canonical: "/cookies" },
+
 };
 
 const LAST_UPDATED = "12 May 2026";

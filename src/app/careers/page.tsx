@@ -1,58 +1,64 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowUpRight, Briefcase, MapPin, Clock, Banknote, Heart, Shield, Wrench, Users } from "lucide-react";
+import { ArrowUpRight, Briefcase, MapPin, Clock, Banknote, Mail, Filter, FileCheck, Layers } from "lucide-react";
 import { PageHeader } from "@/components/PageHeader";
 import { ImageStrip } from "@/components/ImageStrip";
 import { CTA } from "@/components/CTA";
 import { ROLES, DEPARTMENT_ORDER, rolesByDepartment, type Role } from "@/lib/roles";
 
 export const metadata: Metadata = {
-  title: "Careers — Drive, plan, build the Kapture operating layer",
+  title: "Careers — Recruit your team effortlessly",
   description:
-    "HGV drivers, warehouse operatives, transport planners, account managers, engineers and leadership — open roles across the Kapture Logistics network.",
+    "Custom UK logistics application forms — driver, warehouse, transport office, commercial, leadership and compliance. Conditional logic baked in. Submissions wired to your inbox.",
 };
 
-const PRINCIPLES = [
+/**
+ * Feature pitch — what the careers funnel does for the operator deploying
+ * the Kapture Logistics template, not what the template-as-employer offers.
+ * This page sits one step closer to the template-buyer than the rest of
+ * the site, alongside /quote.
+ */
+const FEATURES = [
   {
-    icon: Heart,
-    title: "People first, always.",
-    body: "We don't shout. We don't politic. We pay properly, plan properly, and trust people to do the job they were hired for.",
+    icon: Filter,
+    title: "Conditional by role family.",
+    body: "Drivers see DVLA, CPC and tacho questions. Warehouse sees FLT and shift preference. Office sees TMS and references. The form rewrites itself.",
   },
   {
-    icon: Shield,
-    title: "Compliance is the floor, not the ceiling.",
-    body: "Our drivers, sites and books are audit-ready every day — and we back the people who keep them that way.",
+    icon: Mail,
+    title: "Wired to your inbox.",
+    body: "Every application lands in your Resend or SMTP inbox tagged [Careers] with the candidate, role, and full structured payload. No dashboards to log into.",
   },
   {
-    icon: Wrench,
-    title: "Modern tools, no excuses.",
-    body: "Late-model fleet, real telematics, a platform that works on the cab and the floor. If a tool is wrong, we fix it — fast.",
+    icon: FileCheck,
+    title: "UK-compliant by default.",
+    body: "Right-to-work, 5-year address history for drivers and compliance, DVLA + DBS consents, declarations — modelled on the standard UK 3PL onboarding pack.",
   },
   {
-    icon: Users,
-    title: "Promote from within.",
-    body: "Operative to team lead. Team lead to ops. Planner to TM. The ladder is real and the rungs are funded.",
+    icon: Layers,
+    title: "17 roles ready to deploy.",
+    body: "From HGV Class 1 to Transport Manager CPC to Platform Engineer. Edit one file, all forms inherit the change. Add new roles in minutes.",
   },
 ];
 
 export default function CareersPage() {
   const grouped = rolesByDepartment();
-  const liveRoles = ROLES.filter((r) => r.status === "Hiring now").length;
+  const totalRoles = ROLES.length;
 
   return (
     <>
       <PageHeader
-        eyebrow={`Careers · ${liveRoles} roles open right now`}
-        title="Drive, plan, and build the Kapture operating layer."
-        lede="From the cab to the control tower to the codebase — we hire operators with bold cargo. Real fleet, real platform, real progression."
+        eyebrow={`Careers system · ${totalRoles} role templates ready`}
+        title="Recruit your team effortlessly."
+        lede="Custom application forms for every UK logistics role — driver, warehouse, transport office, commercial, compliance and leadership. Conditional logic built in. Submissions wired to your inbox. Click any role to preview the form your candidates will see."
       >
         <div className="flex flex-wrap gap-x-3 gap-y-4">
           <Link href="#open-roles" className="btn-primary text-[18px]">
-            See open roles
+            Browse role templates
             <ArrowUpRight size={18} />
           </Link>
           <Link href="/careers/apply/general" className="btn-secondary text-[18px]">
-            Send a speculative CV
+            See the universal form
             <ArrowUpRight size={18} />
           </Link>
         </div>
@@ -61,23 +67,23 @@ export default function CareersPage() {
       <ImageStrip
         src="https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=2000&q=80"
         alt="Kapture Logistics fleet on the move"
-        eyebrow="Where you'll work"
-        caption="Modern fleet. Modern platform. Modern people standards."
+        eyebrow="Built for the UK 3PL standard"
+        caption="Right-to-work, DVLA, DBS, CPC, FORS — all the UK paperwork, baked in."
         height="short"
       />
 
-      {/* ─── How we operate ─────────────────────────────────────────────── */}
+      {/* ─── What's inside ─────────────────────────────────────────────── */}
       <section className="container-kapture py-24">
         <p className="chip">
           <span className="divider-dot" />
-          How we operate
+          What's inside
         </p>
         <h2 className="h-section mt-4 max-w-2xl text-balance">
-          Four principles that decide every hire.
+          Four pieces that make the difference between a careers page and a hiring engine.
         </h2>
 
         <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {PRINCIPLES.map((p, i) => {
+          {FEATURES.map((p, i) => {
             const Icon = p.icon;
             return (
               <div
@@ -109,16 +115,16 @@ export default function CareersPage() {
             <div>
               <p className="chip">
                 <span className="divider-dot" />
-                Open roles
+                Role templates
               </p>
               <h2 className="h-section mt-4 max-w-2xl text-balance">
-                {ROLES.length} roles. Every department. UK-wide.
+                {ROLES.length} roles, six departments, every UK 3PL chair.
               </h2>
             </div>
             <p className="max-w-md text-sm text-kapture-smoke dark:text-kapture-fog">
-              Standard application form per role. We screen within 5 working
-              days. If you're a fit, you'll meet a hiring manager — not a
-              robot.
+              Click any role to see the application form your candidates will
+              fill in. Submissions land in your inbox tagged by department —
+              ready to triage in 30 seconds.
             </p>
           </div>
 
@@ -153,22 +159,23 @@ export default function CareersPage() {
         <div className="rounded-3xl border bg-white p-8 dark:border-kapture-ash dark:bg-kapture-coal md:p-12">
           <p className="chip">
             <span className="divider-dot" />
-            Don't see your role?
+            Need a role we haven't built?
           </p>
           <h2 className="h-section mt-4 max-w-2xl text-balance">
-            Send a speculative application.
+            One universal form, ready for any logistics role.
           </h2>
           <p className="lede mt-4 max-w-xl">
-            Tell us what you do and where you're based. We'll keep you on the
-            shortlist for the next role that matches.
+            The speculative form runs the universal sections only — about-you,
+            right-to-work, work history, references, CV. Use it as the catch-all
+            for roles your team hasn't templatised yet.
           </p>
           <div className="mt-8 flex flex-wrap gap-x-3 gap-y-4">
             <Link href="/careers/apply/general" className="btn-primary text-[18px]">
-              Apply speculatively
+              Preview universal form
               <ArrowUpRight size={18} />
             </Link>
             <Link href="/contact?topic=careers" className="btn-secondary text-[18px]">
-              Talk to People
+              Talk to Kapture
               <ArrowUpRight size={18} />
             </Link>
           </div>

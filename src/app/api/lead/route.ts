@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import fs from "node:fs";
+import path from "node:path";
 import { getSupabaseAdmin } from "@/lib/supabase";
 
 export const runtime = "nodejs";
@@ -113,6 +115,125 @@ function buildEmailHtml(lead: Lead, subject: string) {
 </html>`;
 }
 
+/* ────────────────────────────────────────────────────────────────────── */
+/* Report attachment — read once, cache base64                             */
+/* ────────────────────────────────────────────────────────────────────── */
+
+const REPORT_FILENAME = "state-of-uk-logistics-2026.pdf";
+let reportCache: { base64: string; size: number } | null = null;
+
+function readReportAsBase64() {
+  if (reportCache) return reportCache;
+  try {
+    const filepath = path.join(process.cwd(), "public", REPORT_FILENAME);
+    const buffer = fs.readFileSync(filepath);
+    reportCache = {
+      base64: buffer.toString("base64"),
+      size: buffer.length,
+    };
+    return reportCache;
+  } catch (err) {
+    console.error("[lead] failed reading report PDF:", err);
+    return null;
+  }
+}
+
+function buildSubscriberEmailHtml(firstName: string) {
+  const greeting = firstName ? `Hi ${escapeHtml(firstName)},` : "Hi there,";
+  return `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Your State of UK Logistics 2026 report</title></head>
+<body style="margin:0;padding:32px 16px;background:#f5f5f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#0A0A0A;">
+  <div style="max-width:640px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+    <div style="background:#0A0A0A;color:#ffffff;padding:28px 32px;">
+      <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:#FFD400;">Kapture Studio · Annual report</div>
+      <div style="margin-top:8px;font-size:22px;font-weight:700;line-height:1.2;">Your State of UK Logistics 2026 report.</div>
+    </div>
+    <div style="padding:28px 32px;color:#3A3A3A;font-size:14px;line-height:1.6;">
+      <p style="margin:0 0 14px;">${greeting}</p>
+      <p style="margin:0 0 14px;">Attached is the free edition of <strong>State of UK Logistics Websites 2026</strong> — 14 pages, the AI thesis in full, the score curve across 200 brands, the survivor's stack, and the seven prioritised moves we'd make tomorrow.</p>
+      <p style="margin:0 0 14px;">If a single thing in there resonates, two paths from here:</p>
+      <table cellpadding="0" cellspacing="0" border="0" style="margin:18px 0;">
+        <tr>
+          <td style="padding-right:8px;">
+            <a href="https://kapture-logistics.vercel.app/request-audit" style="display:inline-block;background:#FFD400;color:#0A0A0A;text-decoration:none;font-weight:700;padding:12px 20px;border-radius:9999px;font-size:13px;">Request a free audit →</a>
+          </td>
+          <td>
+            <a href="https://kapture-logistics.vercel.app/quote" style="display:inline-block;background:#0A0A0A;color:#ffffff;text-decoration:none;font-weight:700;padding:12px 20px;border-radius:9999px;font-size:13px;">Ship a new website →</a>
+          </td>
+        </tr>
+      </table>
+      <p style="margin:0 0 14px;color:#9A9A9A;font-size:12px;">The full 64-page edition — every brand named, every score published, every sector breakdown — drops to subscribers next quarter. You're already on the list.</p>
+      <p style="margin:0 0 8px;">— Acie<br/><span style="color:#9A9A9A;">Kapture Studio</span></p>
+    </div>
+    <div style="padding:18px 32px;background:#f5f5f5;color:#9A9A9A;font-size:11px;text-align:center;text-transform:uppercase;letter-spacing:0.5px;">
+      Kapture Studio · London · Harare · Johannesburg · Dubai · Lusaka
+    </div>
+  </div>
+</body>
+</html>`;
+}
+
+async function sendReportToSubscriber(lead: Lead) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.warn("[lead] RESEND_API_KEY not set — subscriber email skipped.");
+    return { ok: false, reason: "no-api-key" as const };
+  }
+
+  const subscriberEmail = typeof lead.email === "string" ? lead.email : "";
+  if (!subscriberEmail) {
+    return { ok: false, reason: "no-recipient" as const };
+  }
+
+  const report = readReportAsBase64();
+  if (!report) {
+    return { ok: false, reason: "no-pdf" as const };
+  }
+
+  const from =
+    process.env.RESEND_FROM_EMAIL || "Kapture Studio <onboarding@resend.dev>";
+  const firstName =
+    typeof lead.name === "string" && lead.name ? lead.name.split(/\s+/)[0] : "";
+
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from,
+        to: [subscriberEmail],
+        subject: "Your State of UK Logistics 2026 report",
+        html: buildSubscriberEmailHtml(firstName),
+        attachments: [
+          {
+            filename: REPORT_FILENAME,
+            content: report.base64,
+          },
+        ],
+      }),
+    });
+    if (!res.ok) {
+      const errBody = await res.text().catch(() => "(no body)");
+      console.error(
+        `[lead] Resend rejected subscriber send. status=${res.status} to=${subscriberEmail} body=${errBody}`,
+      );
+      return { ok: false, reason: "send-failed" as const };
+    }
+    const okBody = await res.json().catch(() => ({}));
+    console.log(
+      `[lead] Resend accepted subscriber email. id=${(okBody as { id?: string }).id ?? "?"} to=${subscriberEmail}`,
+    );
+    return { ok: true as const };
+  } catch (err) {
+    console.error("[lead] subscriber send exception:", err);
+    return { ok: false, reason: "exception" as const };
+  }
+}
+
 async function sendLeadEmail(lead: Lead) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
@@ -220,11 +341,16 @@ export async function POST(req: Request) {
 
   const lead = blankToNull(parsed.data);
 
-  // Email + webhook in parallel — neither blocks the user response on
-  // failure. Email is the primary delivery; everything else is fan-out.
+  // Three jobs fire in parallel — none blocks the user response.
+  //   1. notify studio inbox (every lead)
+  //   2. fan out to webhook (Make.com etc.)
+  //   3. email the report PDF to subscribers — only when this is a
+  //      newsletter signup from /state-of-uk-logistics-2026
+  const isReportSignup = lead.type === "newsletter";
   const [emailResult] = await Promise.all([
     sendLeadEmail(lead),
     notifyWebhook(lead),
+    isReportSignup ? sendReportToSubscriber(lead) : Promise.resolve(),
   ]);
 
   // Best-effort Supabase persistence — never fails the user request.

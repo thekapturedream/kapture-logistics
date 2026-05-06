@@ -127,12 +127,11 @@ export function Hero() {
             transition={{ duration: 0.6, delay: 0.05 }}
             className="mt-6 font-display text-hero-xl text-balance text-white"
           >
-            Move a load{" "}
             <span className="relative inline-block pb-1">
-              today
+              Move
               <span className="absolute -bottom-0 left-0 h-1.5 w-full -skew-x-6 bg-kapture-yellow" aria-hidden />
             </span>{" "}
-            with Kapture.
+            a load today with Kapture.
           </motion.h1>
         </div>
 
@@ -266,7 +265,7 @@ export function Hero() {
               type="submit"
               className="btn-yellow h-14 px-7 text-base"
             >
-              See Prices
+              Ship now
               <ArrowRight size={18} />
             </button>
           </div>

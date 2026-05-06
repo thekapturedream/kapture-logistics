@@ -37,13 +37,26 @@ export default function StateOfUKLogisticsPage() {
             <LiveTicker />
           </div>
 
+          {/*
+            Headline whitespace:
+            - JSX trims literal newlines between sibling text/elements, so
+              we add explicit `{" "}` spacers around the desktop-only <br>
+              and before the underlined span — otherwise mobile renders
+              "websiteswon't" and "surviveAI." with no spaces.
+            - The leading space LIVES OUTSIDE the inline-block span. A
+              leading whitespace character inside an inline-block element
+              collapses on render.
+          */}
           <h1 className="mt-12 max-w-5xl font-display text-[clamp(2.75rem,7vw,6rem)] font-bold leading-[0.95] tracking-tight text-balance">
-            Most UK logistics websites
+            Most UK logistics websites{" "}
             <br className="hidden md:block" />
-            won't survive
+            won&rsquo;t survive{" "}
             <span className="relative inline-block pb-1">
-              {" "}AI.
-              <span className="absolute -bottom-0 left-2 h-1.5 w-[calc(100%-0.5rem)] -skew-x-6 bg-kapture-yellow" aria-hidden />
+              AI.
+              <span
+                className="absolute -bottom-0 left-2 h-1.5 w-[calc(100%-0.5rem)] -skew-x-6 bg-kapture-yellow"
+                aria-hidden
+              />
             </span>
           </h1>
 
@@ -90,8 +103,7 @@ export default function StateOfUKLogisticsPage() {
             The finding
           </p>
           <h2 className="mt-6 font-display text-[clamp(2rem,4vw,3.5rem)] leading-tight tracking-tight text-balance">
-            AI isn't a feature anymore. It's the line between
-            survival and irrelevance.
+            AI is the line between survival and irrelevance.
           </h2>
           <p className="lede mt-6 max-w-2xl">
             The top quartile of UK logistics websites have integrated AI for

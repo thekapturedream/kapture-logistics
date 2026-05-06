@@ -10,7 +10,7 @@ type Status = "idle" | "submitting" | "success" | "error";
 
 const INTENTS = [
   { id: "buy",       label: "Buy this template as-is",        body: "Branded for me, deployed to my domain, repo handed over." },
-  { id: "customize", label: "Customize this template",         body: "Different copy, different industry, different colours." },
+  { id: "customize", label: "Customise this template",         body: "Different copy, different industry, different colours." },
   { id: "custom",    label: "Build something custom",          body: "Bespoke site designed from scratch around my business." },
 ];
 

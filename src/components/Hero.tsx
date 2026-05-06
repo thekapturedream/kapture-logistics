@@ -108,10 +108,10 @@ export function Hero() {
           - mobile order: spacer / headline / form / stats
               · headline 20px above form (mt-5)
               · form 32px below stats fallback handled inside form
-          - desktop order: spacer / stats / headline / form
-              · stats sit as a small strap above the headline
+          - desktop order: spacer / headline / form / stats
               · headline 40px above the form (sm:mt-10 on form)
-              · form 40px from the section bottom (sm:pb-10)
+              · stats strap 32px below the form (sm:mt-8)
+              · 40px to the section bottom (sm:pb-10)
         Order utilities make the form the bottom-most piece on desktop
         without duplicating any markup.
       */}
@@ -322,7 +322,7 @@ export function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="order-4 mx-auto mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-white/70 sm:order-2 sm:mt-0"
+          className="order-4 mx-auto mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-white/70 sm:order-5 sm:mt-8"
         >
           <span className="inline-flex items-center gap-1.5">
             <span className="relative flex h-2 w-2">

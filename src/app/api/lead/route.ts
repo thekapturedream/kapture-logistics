@@ -116,7 +116,7 @@ function buildEmailHtml(lead: Lead, subject: string) {
 async function sendLeadEmail(lead: Lead) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
-    console.warn("[lead] RESEND_API_KEY not set — email skipped.");
+    console.warn("[lead] RESEND_API_KEY not set — email skipped. Hit /api/test-email for diagnostics.");
     return { ok: false, reason: "no-api-key" as const };
   }
 
@@ -144,13 +144,18 @@ async function sendLeadEmail(lead: Lead) {
       }),
     });
     if (!res.ok) {
-      const text = await res.text().catch(() => "");
-      console.error("[lead] resend send failed:", res.status, text);
-      return { ok: false, reason: "send-failed" as const };
+      // Capture full Resend response body for debugging in Vercel logs
+      const errBody = await res.text().catch(() => "(no body)");
+      console.error(
+        `[lead] Resend rejected send. status=${res.status} from=${from} to=${to} body=${errBody}`,
+      );
+      return { ok: false, reason: "send-failed" as const, status: res.status, errBody };
     }
+    const okBody = await res.json().catch(() => ({}));
+    console.log(`[lead] Resend accepted email. id=${(okBody as { id?: string }).id ?? "?"} to=${to}`);
     return { ok: true as const };
   } catch (err) {
-    console.error("[lead] resend send error:", err);
+    console.error("[lead] resend send exception:", err);
     return { ok: false, reason: "exception" as const };
   }
 }

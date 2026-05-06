@@ -47,7 +47,7 @@ export default function StateOfUKLogisticsPage() {
             </span>
           </h1>
 
-          <div className="mt-10 flex flex-wrap gap-3">
+          <div className="mt-10 flex flex-wrap gap-x-3 gap-y-4">
             <a href="#download" className="btn-yellow whitespace-nowrap text-[18px]">
               Get report
               <ArrowUpRight size={18} />
@@ -270,17 +270,17 @@ export default function StateOfUKLogisticsPage() {
             Kapture audits your site against the same nine dimensions used in
             the report. Public dashboard delivered in 48 hours.
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link href="/request-audit" className="btn-yellow whitespace-nowrap">
+          <div className="mt-8 flex flex-wrap gap-x-3 gap-y-4">
+            <Link href="/request-audit" className="btn-yellow whitespace-nowrap text-[18px]">
               Request audit
-              <ArrowUpRight size={16} />
+              <ArrowUpRight size={18} />
             </Link>
             <Link
               href="/quote"
-              className="btn-kapture whitespace-nowrap border border-kapture-ash bg-transparent text-kapture-white hover:bg-white hover:text-kapture-black"
+              className="btn-kapture whitespace-nowrap border border-kapture-ash bg-transparent text-[18px] text-kapture-white hover:bg-white hover:text-kapture-black"
             >
               Ship a new site
-              <ArrowUpRight size={16} />
+              <ArrowUpRight size={18} />
             </Link>
           </div>
         </div>

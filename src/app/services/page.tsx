@@ -78,14 +78,14 @@ export default function ServicesPage() {
         title="Freight & logistics services, designed to be deployed."
         lede="Pick a service or stack them. Every Kapture engagement is wired into the same platform, the same control tower, the same accountability."
       >
-        <div className="flex flex-wrap gap-3">
-          <Link href="/quote" className="btn-primary">
+        <div className="flex flex-wrap gap-x-3 gap-y-4">
+          <Link href="/quote" className="btn-primary text-[18px]">
             Get a quote
-            <ArrowUpRight size={16} />
+            <ArrowUpRight size={18} />
           </Link>
-          <Link href="/contact" className="btn-secondary">
+          <Link href="/contact" className="btn-secondary text-[18px]">
             Talk to a strategist
-            <ArrowUpRight size={16} />
+            <ArrowUpRight size={18} />
           </Link>
         </div>
       </PageHeader>
@@ -133,7 +133,7 @@ export default function ServicesPage() {
                       </li>
                     ))}
                   </ul>
-                  <div className="mt-8 flex flex-wrap gap-3">
+                  <div className="mt-8 flex flex-wrap gap-x-3 gap-y-4">
                     <Link href={`/quote?service=${s.id}`} className="btn-primary">
                       Get a {s.eyebrow.split(" ")[0].toLowerCase()} quote
                       <ArrowUpRight size={14} />

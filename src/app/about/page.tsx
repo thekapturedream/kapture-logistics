@@ -39,14 +39,14 @@ export default function AboutPage() {
         title="Designed for operators with bold cargo."
         lede="Kapture Logistics is a deployable system — designed and engineered by Kapture, the studio turning bold ideas into operating businesses across Africa and beyond. Not a company. A solution."
       >
-        <div className="flex flex-wrap gap-3">
-          <Link href="/contact?topic=partner" className="btn-primary">
+        <div className="flex flex-wrap gap-x-3 gap-y-4">
+          <Link href="/contact?topic=partner" className="btn-primary text-[18px]">
             Partner with us
-            <ArrowUpRight size={16} />
+            <ArrowUpRight size={18} />
           </Link>
-          <Link href={SITE.parentUrl} target="_blank" rel="noreferrer" className="btn-secondary">
+          <Link href={SITE.parentUrl} target="_blank" rel="noreferrer" className="btn-secondary text-[18px]">
             Visit Kapture
-            <ArrowUpRight size={16} />
+            <ArrowUpRight size={18} />
           </Link>
         </div>
       </PageHeader>

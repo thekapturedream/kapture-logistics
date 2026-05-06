@@ -86,7 +86,10 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${sans.variable} ${display.variable} ${mono.variable}`}
+      // First paint is always dark — `dark` class is on the html element
+      // before next-themes hydrates, so even slow/stored-preference loads
+      // never flash light. ThemeProvider takes over after hydration.
+      className={`dark ${sans.variable} ${display.variable} ${mono.variable}`}
     >
       <body className="min-h-screen bg-white font-sans text-kapture-black antialiased dark:bg-kapture-black dark:text-kapture-white">
         <ThemeProvider attribute="class" defaultTheme="dark">

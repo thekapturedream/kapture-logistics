@@ -217,42 +217,47 @@ export default function StateOfUKLogisticsPage() {
         </div>
       </section>
 
-      {/* DOWNLOAD FORM — the conversion */}
+      {/* DOWNLOAD FORM — header above, form full-width below, no sidebar */}
       <section
         id="download"
         className="scroll-mt-20 bg-kapture-paper py-24 md:py-32 dark:bg-kapture-ink"
       >
-        <div className="container-kapture grid gap-12 lg:grid-cols-12">
-          <div className="lg:col-span-5">
-            <p className="chip">
+        <div className="container-kapture">
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="chip mx-auto">
               <span className="divider-dot" />
-              Free · 64 pages · PDF
+              Free · PDF · attached on submit
             </p>
             <h2 className="h-section mt-4 text-balance">
               The full data, free.
             </h2>
             <p className="lede mt-5">
-              The complete report — methodology, the AI thesis, the named top
-              and bottom quartiles, sector breakdowns, and the survivor's
-              tech stack — lands in your inbox the moment you submit.
+              Methodology, the AI thesis, the named top and bottom quartiles,
+              sector breakdowns, the survivor's tech stack — lands in your
+              inbox the moment you submit.
             </p>
-            <ul className="mt-8 space-y-3 text-sm text-kapture-smoke dark:text-kapture-fog">
-              {[
-                "64 pages, full data, named brands",
-                "The AI tools the top 5% are using",
-                "Sector breakdowns + UK regional heatmap",
-                "Quarterly updates by email",
-              ].map((line) => (
-                <li key={line} className="flex items-start gap-3">
-                  <Zap size={14} className="mt-1 shrink-0 text-kapture-yellow" />
-                  {line}
-                </li>
-              ))}
-            </ul>
           </div>
-          <div className="lg:col-span-7">
+
+          <div className="mx-auto mt-12 max-w-3xl">
             <StateOfUkForm />
           </div>
+
+          <ul className="mx-auto mt-12 grid max-w-3xl grid-cols-1 gap-3 sm:grid-cols-2">
+            {[
+              "64 pages, full data, named brands",
+              "The AI tools the top 5% are using",
+              "Sector breakdowns + UK regional heatmap",
+              "Quarterly updates by email",
+            ].map((line) => (
+              <li
+                key={line}
+                className="flex items-start gap-3 rounded-xl border bg-white p-4 text-sm dark:border-kapture-ash dark:bg-kapture-coal"
+              >
+                <Zap size={14} className="mt-0.5 shrink-0 text-kapture-yellow" />
+                <span className="text-kapture-smoke dark:text-kapture-fog">{line}</span>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 

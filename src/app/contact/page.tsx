@@ -21,64 +21,60 @@ export default function ContactPage({ searchParams }: Props) {
         lede="Quotes, partnerships, customs, careers, or live shipments — Kapture Logistics responds inside the hour during business hours, faster on urgent lanes."
       />
 
-      <section className="container-kapture py-16 md:py-24">
-        <div className="grid gap-12 lg:grid-cols-12">
-          <div className="lg:col-span-7">
-            <ContactForm topic={searchParams.topic} />
+      {/* Form first — full width, no sidebar */}
+      <section className="container-kapture py-16 md:py-20">
+        <div className="mx-auto max-w-3xl">
+          <ContactForm topic={searchParams.topic} />
+        </div>
+      </section>
+
+      {/* Reach the team — context drops below */}
+      <section className="bg-kapture-paper py-20 md:py-24 dark:bg-kapture-ink">
+        <div className="container-kapture">
+          <div className="mx-auto mb-12 max-w-2xl">
+            <p className="chip"><span className="divider-dot" />Reach the team</p>
+            <h2 className="h-section mt-4 text-balance">
+              Email, phone, or in person.
+            </h2>
           </div>
 
-          <aside className="lg:col-span-5">
-            <div className="sticky top-24 space-y-8">
-              <div className="rounded-2xl border bg-white p-6 dark:border-kapture-ash dark:bg-kapture-coal">
-                <p className="chip">
-                  <span className="divider-dot" />
-                  Reach Kapture
-                </p>
-                <ul className="mt-6 space-y-4 text-sm">
-                  <li className="flex items-start gap-3">
-                    <Mail size={16} className="mt-0.5 text-kapture-yellow" />
-                    <a
-                      href={`mailto:${SITE.email}`}
-                      className="text-kapture-smoke hover:text-kapture-black dark:text-kapture-fog dark:hover:text-kapture-white"
-                    >
-                      {SITE.email}
-                    </a>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <Phone size={16} className="mt-0.5 text-kapture-yellow" />
-                    <a
-                      href={`tel:${SITE.phone.replace(/\s/g, "")}`}
-                      className="text-kapture-smoke hover:text-kapture-black dark:text-kapture-fog dark:hover:text-kapture-white"
-                    >
-                      {SITE.phone}
-                    </a>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <MapPin size={16} className="mt-0.5 text-kapture-yellow" />
-                    <span className="text-kapture-smoke dark:text-kapture-fog">
-                      {SITE.cities.join(" · ")}
-                    </span>
-                  </li>
-                </ul>
+          <ul className="mx-auto grid max-w-5xl gap-3 sm:grid-cols-3">
+            <li className="rounded-2xl border bg-white p-6 dark:border-kapture-ash dark:bg-kapture-coal">
+              <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-kapture-paper text-kapture-black dark:bg-kapture-ash dark:text-kapture-white">
+                <Mail size={16} />
               </div>
+              <p className="mt-5 text-xs font-semibold uppercase tracking-wider text-kapture-mist">Email</p>
+              <a
+                href={`mailto:${SITE.email}`}
+                className="mt-1 block break-all text-sm font-bold text-kapture-black hover:text-kapture-amber dark:text-kapture-white"
+              >
+                {SITE.email}
+              </a>
+            </li>
 
-              <div className="rounded-2xl bg-kapture-black p-6 text-kapture-white dark:bg-kapture-ink">
-                <p className="text-xs uppercase tracking-wider text-kapture-fog">
-                  Need a number, fast?
-                </p>
-                <h4 className="mt-2 font-display text-xl font-bold">
-                  Skip the form, get prices.
-                </h4>
-                <p className="mt-2 text-sm text-kapture-fog">
-                  The quote desk is faster for live cargo. Punch in your endpoints, get a costed
-                  plan back inside the hour.
-                </p>
-                <a href="/quote" className="btn-yellow mt-5">
-                  Open quote desk
-                </a>
+            <li className="rounded-2xl border bg-white p-6 dark:border-kapture-ash dark:bg-kapture-coal">
+              <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-kapture-paper text-kapture-black dark:bg-kapture-ash dark:text-kapture-white">
+                <Phone size={16} />
               </div>
-            </div>
-          </aside>
+              <p className="mt-5 text-xs font-semibold uppercase tracking-wider text-kapture-mist">Phone</p>
+              <a
+                href={`tel:${SITE.phone.replace(/\s/g, "")}`}
+                className="mt-1 block text-sm font-bold text-kapture-black hover:text-kapture-amber dark:text-kapture-white"
+              >
+                {SITE.phone}
+              </a>
+            </li>
+
+            <li className="rounded-2xl border bg-white p-6 dark:border-kapture-ash dark:bg-kapture-coal">
+              <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-kapture-paper text-kapture-black dark:bg-kapture-ash dark:text-kapture-white">
+                <MapPin size={16} />
+              </div>
+              <p className="mt-5 text-xs font-semibold uppercase tracking-wider text-kapture-mist">Studios</p>
+              <p className="mt-1 text-sm font-bold text-kapture-black dark:text-kapture-white">
+                {SITE.cities.join(" · ")}
+              </p>
+            </li>
+          </ul>
         </div>
       </section>
     </>

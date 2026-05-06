@@ -143,7 +143,7 @@ export function RequestAuditForm() {
           disabled={status === "submitting"}
           className="btn-yellow whitespace-nowrap text-base font-bold disabled:opacity-60"
         >
-          {status === "submitting" ? "Sending…" : "Request audit"}
+          {status === "submitting" ? "Sending…" : "Submit request"}
           <ArrowRight size={16} />
         </button>
       </div>

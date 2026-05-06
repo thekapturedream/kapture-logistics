@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { PageHeader } from "@/components/PageHeader";
 import { QuoteForm } from "@/components/QuoteForm";
-import { ScrollToFormButton } from "@/components/ScrollToFormButton";
 import {
   Check,
   Layers,
@@ -21,7 +20,7 @@ export const metadata: Metadata = {
 };
 
 const STEPS = [
-  "Fill in the form below — your contact details and what you want.",
+  "Fill in the form — your contact details and what you want.",
   "Pick a 15-minute meeting slot. Free, no commitment.",
   "We confirm scope and pricing on the call.",
   "Your branded site goes live — usually within 24 hours.",
@@ -46,17 +45,17 @@ const FEATURES = [
   {
     icon: Cloud,
     title: "Hosted on Vercel, zero ops",
-    body: "Global CDN, auto-deploys on every code change, free SSL, custom domain ready. We handle the deploy, you just publish.",
+    body: "Global CDN, auto-deploys on every code change, free SSL, custom domain ready.",
   },
   {
     icon: Smartphone,
     title: "Light + dark mode, mobile-first",
-    body: "Looks great on phone, tablet, desktop. Light mode by default, dark mode one tap away. Built mobile-first, not retrofitted.",
+    body: "Looks great on phone, tablet, desktop. Light mode by default, dark mode one tap away.",
   },
   {
     icon: Search,
     title: "SEO and AI-search ready",
-    body: "Open Graph cards, structured metadata, sitemap, semantic HTML. Designed to be cited by AI search and ranked by Google.",
+    body: "Open Graph cards, structured metadata, sitemap, semantic HTML. Designed to be cited by AI search.",
   },
   {
     icon: ShieldCheck,
@@ -77,18 +76,25 @@ export default function QuotePage() {
         eyebrow="A heads-up before you continue"
         title="Ship your website today with Kapture."
         lede="What you're looking at is a Kapture website template — fully built, ready to be branded for your business. Fill in the short form below, then pick a 15-minute meeting slot. We talk, agree the brief, and your site goes live."
-      >
-        <ScrollToFormButton />
-      </PageHeader>
+      />
 
-      {/* How it works — plain English, four steps */}
-      <section className="border-b border-kapture-fog/60 dark:border-kapture-ash">
-        <div className="container-kapture py-12 md:py-16">
-          <p className="chip">
-            <span className="divider-dot" />
-            Here's the plan
-          </p>
-          <ol className="mt-6 grid gap-3 md:grid-cols-4">
+      {/* Form first — full width, no sidebar */}
+      <section className="container-kapture py-16 md:py-20">
+        <div className="mx-auto max-w-3xl">
+          <QuoteForm />
+        </div>
+      </section>
+
+      {/* Context drops below — the four-step plan */}
+      <section className="border-y border-kapture-fog/60 bg-kapture-paper py-20 md:py-24 dark:border-kapture-ash dark:bg-kapture-ink">
+        <div className="container-kapture">
+          <div className="mx-auto mb-12 max-w-2xl">
+            <p className="chip"><span className="divider-dot" />Here's the plan</p>
+            <h2 className="h-section mt-4 text-balance">
+              Form → meeting → live site.
+            </h2>
+          </div>
+          <ol className="mx-auto grid max-w-5xl gap-3 md:grid-cols-4">
             {STEPS.map((step, i) => (
               <li
                 key={i}
@@ -106,72 +112,57 @@ export default function QuotePage() {
         </div>
       </section>
 
-      {/* Form + features sidebar */}
-      <section id="onboarding-form" className="scroll-mt-20 container-kapture py-16 md:py-20">
-        <div className="grid gap-12 lg:grid-cols-12">
-          <div className="lg:col-span-7">
-            <QuoteForm />
-          </div>
+      {/* What you get — features in a clean grid below */}
+      <section className="container-kapture py-20 md:py-24">
+        <div className="mx-auto mb-12 max-w-2xl">
+          <p className="chip"><span className="divider-dot" />What you get</p>
+          <h2 className="h-section mt-4 text-balance">
+            Everything on this site, branded for you.
+          </h2>
+          <p className="lede mt-3">
+            Not a Wordpress theme. Not a Figma mock-up. A working software
+            product, ready to run your business.
+          </p>
+        </div>
 
-          <aside className="lg:col-span-5">
-            <div className="sticky top-24 space-y-6">
-              <div>
-                <p className="chip">
-                  <span className="divider-dot" />
-                  What you get
+        <ul className="mx-auto grid max-w-6xl grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {FEATURES.map((f) => {
+            const Icon = f.icon;
+            return (
+              <li
+                key={f.title}
+                className="rounded-2xl border bg-white p-6 dark:border-kapture-ash dark:bg-kapture-coal"
+              >
+                <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-kapture-paper text-kapture-black dark:bg-kapture-ash dark:text-kapture-white">
+                  <Icon size={16} strokeWidth={1.75} />
+                </div>
+                <p className="mt-5 text-sm font-bold">{f.title}</p>
+                <p className="mt-2 text-xs leading-relaxed text-kapture-smoke dark:text-kapture-fog">
+                  {f.body}
                 </p>
-                <h3 className="mt-4 font-display text-2xl font-bold tracking-tight">
-                  Everything on this site, branded for you.
-                </h3>
-                <p className="mt-3 text-sm leading-relaxed text-kapture-smoke dark:text-kapture-fog">
-                  Not a Wordpress theme. Not a Figma mock-up. A working software product, ready to
-                  run your business.
-                </p>
-              </div>
+              </li>
+            );
+          })}
+        </ul>
 
-              <ul className="space-y-3">
-                {FEATURES.map((f) => {
-                  const Icon = f.icon;
-                  return (
-                    <li
-                      key={f.title}
-                      className="flex items-start gap-3 rounded-xl border bg-white p-4 dark:border-kapture-ash dark:bg-kapture-coal"
-                    >
-                      <div className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-kapture-paper text-kapture-black dark:bg-kapture-ash dark:text-kapture-white">
-                        <Icon size={14} strokeWidth={2} />
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold">{f.title}</p>
-                        <p className="mt-1 text-xs leading-relaxed text-kapture-smoke dark:text-kapture-fog">
-                          {f.body}
-                        </p>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
-
-              <div className="rounded-2xl bg-kapture-black p-6 text-kapture-white dark:bg-kapture-ink">
-                <p className="text-xs uppercase tracking-wider text-kapture-fog">
-                  After your meeting
-                </p>
-                <ul className="mt-3 space-y-2 text-sm text-kapture-fog">
-                  <li className="flex items-start gap-2">
-                    <Check size={14} className="mt-1 shrink-0 text-kapture-yellow" />
-                    Scope, timeline, and pricing locked
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check size={14} className="mt-1 shrink-0 text-kapture-yellow" />
-                    Site live within 24 hours of go-ahead
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check size={14} className="mt-1 shrink-0 text-kapture-yellow" />
-                    GitHub repo and Vercel project handed over
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </aside>
+        <div className="mx-auto mt-12 max-w-3xl rounded-2xl bg-kapture-black p-6 text-kapture-white dark:bg-kapture-coal md:p-8">
+          <p className="text-xs uppercase tracking-wider text-kapture-fog">
+            After your meeting
+          </p>
+          <ul className="mt-4 grid gap-3 sm:grid-cols-3">
+            <li className="flex items-start gap-2 text-sm text-kapture-fog">
+              <Check size={14} className="mt-1 shrink-0 text-kapture-yellow" />
+              Scope, timeline, and pricing locked
+            </li>
+            <li className="flex items-start gap-2 text-sm text-kapture-fog">
+              <Check size={14} className="mt-1 shrink-0 text-kapture-yellow" />
+              Site live within 24 hours of go-ahead
+            </li>
+            <li className="flex items-start gap-2 text-sm text-kapture-fog">
+              <Check size={14} className="mt-1 shrink-0 text-kapture-yellow" />
+              GitHub repo and Vercel project handed over
+            </li>
+          </ul>
         </div>
       </section>
     </>

@@ -9,12 +9,22 @@ import type { Role, RoleField } from "@/lib/roles";
 /**
  * Universal Kapture Logistics application form.
  *
- * Accepts a `role` prop. If null, treats the submission as a speculative
- * application. Renders the universal candidate fields (personal details,
- * right-to-work, work history, references, declarations) plus the
- * role-specific fields defined in roles.ts.
+ * The form is composed from a small set of universal sections plus
+ * role-specific fields defined in roles.ts. Conditional behaviour is
+ * driven by Role.family — see `profileFor()` below — so that a Class 1
+ * driver, a software engineer, and a credit controller all see a form
+ * tailored to their reality without separate components.
  *
- * Submits to /api/lead with type === "careers".
+ * Key conditionals:
+ *   - CV requirement (drivers / warehouse = optional · everyone else = required)
+ *   - Number of references (1 for drivers · 2 standard · 3 for leadership)
+ *   - Address history depth (5 years for drivers/leadership/compliance · 3 otherwise)
+ *   - DVLA consent block (drivers + transport manager only)
+ *   - DBS consent block (every safety- or data-sensitive role)
+ *   - Notice period default options
+ *
+ * Submits to /api/lead with type === "careers". The API route already
+ * accepts an open passthrough for any role-specific extras.
  */
 
 type Status = "idle" | "submitting" | "success" | "error";
@@ -34,13 +44,21 @@ const RTW_OPTIONS = [
   "No current right to work in the UK",
 ];
 
-const NOTICE_OPTIONS = [
+const NOTICE_OPTIONS_OFFICE = [
   "Available immediately",
   "1 week",
   "2 weeks",
   "1 month",
   "2 months",
   "3 months or more",
+];
+
+const NOTICE_OPTIONS_DRIVER = [
+  "Available immediately",
+  "Within 7 days",
+  "1 week",
+  "2 weeks",
+  "1 month",
 ];
 
 const FOUND_VIA_OPTIONS = [
@@ -57,11 +75,162 @@ const FOUND_VIA_OPTIONS = [
   "Other",
 ];
 
+/* ──────────────────────────────────────────────────────────────────────
+ * Conditional profile — drives which sections render and how strict they
+ * are. Keeping this in one place means we never duplicate visibility
+ * logic across the form body.
+ * ─────────────────────────────────────────────────────────────────────*/
+
+type Profile = {
+  /** Whether the candidate must supply a CV link to submit. */
+  cvRequired: boolean;
+  /** Help text under the CV field. */
+  cvHelp: string;
+  /** How many references we ask for. */
+  referenceCount: 1 | 2 | 3;
+  /** Whether the 5-year address history block is shown and required. */
+  showFullAddressHistory: boolean;
+  /** Address history label — varies with depth. */
+  addressHistoryLabel: string;
+  /** Whether the DVLA driving licence consent is shown. */
+  showDvlaConsent: boolean;
+  /** Whether the DBS basic check consent is shown. */
+  showDbsConsent: boolean;
+  /** Notice period option list. */
+  noticeOptions: string[];
+  /** Whether the National Insurance number field is shown. */
+  showNiField: boolean;
+  /** Whether to show a one-line note explaining why we ask for what we ask. */
+  trustLine: string;
+};
+
+function profileFor(role: Role | null): Profile {
+  const family = role?.family ?? "support";
+
+  switch (family) {
+    case "driver":
+      return {
+        cvRequired: false,
+        cvHelp:
+          "CV is optional for driver roles — the work history above is enough. Add a Dropbox or Google Drive link if you have a CV.",
+        referenceCount: 1,
+        showFullAddressHistory: true,
+        addressHistoryLabel: "Last 5 years of UK addresses *",
+        showDvlaConsent: true,
+        showDbsConsent: true,
+        noticeOptions: NOTICE_OPTIONS_DRIVER,
+        showNiField: true,
+        trustLine:
+          "We need a 5-year address history because the Traffic Commissioner requires it for driver vetting. We won't run any check until you accept our offer.",
+      };
+
+    case "warehouse":
+      return {
+        cvRequired: false,
+        cvHelp:
+          "CV is optional for warehouse roles. Work history above is enough. If you have a CV, paste a Dropbox or Google Drive link.",
+        referenceCount: 2,
+        showFullAddressHistory: false,
+        addressHistoryLabel: "Current address *",
+        showDvlaConsent: false,
+        showDbsConsent: true,
+        noticeOptions: NOTICE_OPTIONS_OFFICE,
+        showNiField: false,
+        trustLine:
+          "We don't need bank or ID details at this stage — only enough to pre-screen you.",
+      };
+
+    case "compliance":
+      return {
+        cvRequired: true,
+        cvHelp:
+          "CV required. Include CPC certificate references and any FORS / earned-recognition outcomes you've owned.",
+        referenceCount: 3,
+        showFullAddressHistory: true,
+        addressHistoryLabel: "Last 5 years of UK addresses *",
+        showDvlaConsent: true,
+        showDbsConsent: true,
+        noticeOptions: NOTICE_OPTIONS_OFFICE,
+        showNiField: true,
+        trustLine:
+          "Compliance roles require a 5-year address history under the Traffic Commissioner's good-repute test.",
+      };
+
+    case "leadership":
+      return {
+        cvRequired: true,
+        cvHelp:
+          "CV required. Please attach a link with your full leadership track record and P&L history.",
+        referenceCount: 3,
+        showFullAddressHistory: true,
+        addressHistoryLabel: "Last 5 years of UK addresses *",
+        showDvlaConsent: false,
+        showDbsConsent: true,
+        noticeOptions: NOTICE_OPTIONS_OFFICE,
+        showNiField: false,
+        trustLine:
+          "Leadership roles run a 5-year address history and a basic DBS at offer stage.",
+      };
+
+    case "tech":
+      return {
+        cvRequired: true,
+        cvHelp:
+          "CV / GitHub / portfolio link required. We read code samples seriously.",
+        referenceCount: 2,
+        showFullAddressHistory: false,
+        addressHistoryLabel: "Current address *",
+        showDvlaConsent: false,
+        showDbsConsent: true,
+        noticeOptions: NOTICE_OPTIONS_OFFICE,
+        showNiField: false,
+        trustLine:
+          "Platform roles get a basic DBS at offer stage because the platform handles customer freight data.",
+      };
+
+    case "commercial":
+      return {
+        cvRequired: true,
+        cvHelp: "CV required — include closed-revenue history where possible.",
+        referenceCount: 2,
+        showFullAddressHistory: false,
+        addressHistoryLabel: "Current address *",
+        showDvlaConsent: false,
+        showDbsConsent: false,
+        noticeOptions: NOTICE_OPTIONS_OFFICE,
+        showNiField: false,
+        trustLine: "We won't contact your current employer until you ask us to.",
+      };
+
+    case "office":
+    case "support":
+    default:
+      return {
+        cvRequired: true,
+        cvHelp: "CV required. Dropbox / Google Drive / OneDrive / LinkedIn link.",
+        referenceCount: 2,
+        showFullAddressHistory: false,
+        addressHistoryLabel: "Current address *",
+        showDvlaConsent: false,
+        showDbsConsent: false,
+        noticeOptions: NOTICE_OPTIONS_OFFICE,
+        showNiField: false,
+        trustLine:
+          "We won't contact references or current employers until you give us the green light.",
+      };
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+ * Component
+ * ─────────────────────────────────────────────────────────────────────*/
+
 export function CareersApplicationForm({ role }: Props) {
   const [status, setStatus] = React.useState<Status>("idle");
   const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
   const formRef = React.useRef<HTMLFormElement>(null);
 
+  const profile = profileFor(role);
   const isSpeculative = role === null;
   const roleSlug = role?.slug ?? "general";
   const roleTitle = role?.title ?? "Speculative application";
@@ -71,9 +240,9 @@ export function CareersApplicationForm({ role }: Props) {
     setStatus("submitting");
     setErrorMsg(null);
 
-    const fd = new FormData(e.currentTarget);
     // FormData.entries() collapses repeated keys (multiselect checkboxes
-    // share a name) — we need to gather them as an array first.
+    // share a name) — gather them as arrays first, then join.
+    const fd = new FormData(e.currentTarget);
     const raw: Record<string, string[]> = {};
     fd.forEach((value, key) => {
       const v = typeof value === "string" ? value : "";
@@ -92,7 +261,7 @@ export function CareersApplicationForm({ role }: Props) {
           ...payload,
           type: "careers",
           source: `careers/${roleSlug}`,
-          // Stamp the role title onto the email subject for fast triage
+          // Stamp role title onto subject + department onto topic for triage
           service: roleTitle,
           topic: role?.department ?? "Speculative",
         }),
@@ -139,14 +308,31 @@ export function CareersApplicationForm({ role }: Props) {
     );
   }
 
+  // Build sections in order — auto-number them so we never have a 04 → 06
+  // gap when a section is conditionally hidden.
+  let n = 0;
+  const next = () => String(++n).padStart(2, "0");
+
+  const hasExtraFields = role !== null && role.extraFields.length > 0;
+
   return (
     <form
       ref={formRef}
       onSubmit={onSubmit}
       className="rounded-2xl border bg-white p-6 shadow-kapture-soft dark:border-kapture-ash dark:bg-kapture-coal md:p-10"
     >
-      {/* ─── Section 1 — Personal details ─────────────────────────── */}
-      <SectionHeader n="01" title="About you" />
+      {/* ─── Trust strip ───────────────────────────────────────────── */}
+      <div className="rounded-2xl border border-kapture-yellow/30 bg-kapture-yellow/10 p-4 dark:bg-kapture-yellow/5">
+        <p className="font-mono text-[10px] uppercase tracking-wider text-kapture-amber">
+          Why we ask
+        </p>
+        <p className="mt-2 text-sm leading-relaxed text-kapture-smoke dark:text-kapture-fog">
+          {profile.trustLine}
+        </p>
+      </div>
+
+      {/* ─── 01 — About you ────────────────────────────────────────── */}
+      <SectionHeader n={next()} title="About you" />
       <div className="grid gap-5 md:grid-cols-2">
         <Field label="First name *" name="first_name" autoComplete="given-name" required />
         <Field label="Last name *" name="last_name" autoComplete="family-name" required />
@@ -156,8 +342,8 @@ export function CareersApplicationForm({ role }: Props) {
         <Field label="Postcode *" name="postcode" autoComplete="postal-code" required placeholder="NN11 4NB" />
       </div>
 
-      {/* ─── Section 2 — Right to work ────────────────────────────── */}
-      <SectionHeader n="02" title="Right to work" />
+      {/* ─── 02 — Right to work ───────────────────────────────────── */}
+      <SectionHeader n={next()} title="Right to work" />
       <div className="grid gap-5 md:grid-cols-2">
         <Select
           label="Right to work in the UK *"
@@ -166,45 +352,62 @@ export function CareersApplicationForm({ role }: Props) {
           options={RTW_OPTIONS}
         />
         <Field
-          label="National Insurance number"
-          name="ni_number"
-          placeholder="QQ 12 34 56 C"
-          help="Optional — only required at offer stage."
-        />
-        <Field
           label="Date of birth *"
           name="date_of_birth"
           type="date"
           required
-          help="To confirm right to work and minimum age requirements."
+          help="Confirms minimum age and right-to-work eligibility."
         />
+        {profile.showNiField && (
+          <Field
+            label="National Insurance number"
+            name="ni_number"
+            placeholder="QQ 12 34 56 C"
+            help="Optional now — only required at offer stage."
+          />
+        )}
         <Select
           label="Notice period *"
           name="notice_period"
           required
-          options={NOTICE_OPTIONS}
+          options={profile.noticeOptions}
         />
       </div>
 
-      {/* ─── Section 3 — Address history ──────────────────────────── */}
-      <SectionHeader
-        n="03"
-        title="Address history"
-        subtitle="UK logistics roles require a continuous 5-year address history. List all addresses including dates."
-      />
-      <Textarea
-        label="Last 5 years of addresses *"
-        name="address_history"
-        rows={5}
-        required
-        placeholder={
-          "12 High Street, Daventry, NN11 4NB — Mar 2023 to present\n45 Main Road, Northampton, NN1 5FF — Jun 2020 to Mar 2023\n..."
-        }
-      />
+      {/* ─── 03 — Address history ─────────────────────────────────── */}
+      {profile.showFullAddressHistory ? (
+        <>
+          <SectionHeader
+            n={next()}
+            title="Address history"
+            subtitle="UK driving and compliance roles require a continuous 5-year address history. List all addresses with dates."
+          />
+          <Textarea
+            label={profile.addressHistoryLabel}
+            name="address_history"
+            rows={5}
+            required
+            placeholder={
+              "12 High Street, Daventry, NN11 4NB — Mar 2023 to present\n45 Main Road, Northampton, NN1 5FF — Jun 2020 to Mar 2023\n..."
+            }
+          />
+        </>
+      ) : (
+        <>
+          <SectionHeader n={next()} title="Current address" />
+          <Textarea
+            label={profile.addressHistoryLabel}
+            name="address_history"
+            rows={3}
+            required
+            placeholder="Street, town, postcode."
+          />
+        </>
+      )}
 
-      {/* ─── Section 4 — Work history ─────────────────────────────── */}
+      {/* ─── 04 — Work history ────────────────────────────────────── */}
       <SectionHeader
-        n="04"
+        n={next()}
         title="Work history"
         subtitle="Most recent first. Include any gaps and the reason."
       />
@@ -220,7 +423,13 @@ export function CareersApplicationForm({ role }: Props) {
             label="Job title *"
             name="current_title"
             required
-            placeholder="e.g. Class 1 Driver"
+            placeholder={
+              role?.family === "driver"
+                ? "e.g. Class 1 Driver"
+                : role?.family === "warehouse"
+                ? "e.g. Warehouse Operative"
+                : "Your current job title"
+            }
           />
           <Field
             label="Dates (from – to) *"
@@ -230,7 +439,11 @@ export function CareersApplicationForm({ role }: Props) {
           />
         </div>
         <Textarea
-          label="Previous employers (last 5 years) *"
+          label={
+            profile.showFullAddressHistory
+              ? "Previous employers (last 5 years) *"
+              : "Previous employers (last 3 years) *"
+          }
           name="previous_employers"
           rows={5}
           required
@@ -239,58 +452,63 @@ export function CareersApplicationForm({ role }: Props) {
           }
         />
         <Textarea
-          label="Any gaps in employment in the last 5 years"
+          label="Any gaps in employment over that period"
           name="employment_gaps"
           rows={3}
           placeholder="If yes, please give dates and the reason — or write 'None'."
         />
       </div>
 
-      {/* ─── Section 5 — Role-specific fields ─────────────────────── */}
-      {role && role.extraFields.length > 0 && (
+      {/* ─── 05 — Role-specific fields ────────────────────────────── */}
+      {hasExtraFields && (
         <>
           <SectionHeader
-            n="05"
-            title={`About the ${role.title.split(" — ")[0]} role`}
+            n={next()}
+            title={`About the ${role!.title.split(" — ")[0].split(" (")[0]} role`}
             subtitle="A few questions specific to this role. The more accurate the answer, the faster we can match you."
           />
           <div className="grid gap-5 md:grid-cols-2">
-            {role.extraFields.map((f) => (
+            {role!.extraFields.map((f) => (
               <DynamicField key={f.name} field={f} />
             ))}
           </div>
         </>
       )}
 
-      {/* ─── Section 6 — References ──────────────────────────────── */}
+      {/* ─── 06 — References ──────────────────────────────────────── */}
       <SectionHeader
-        n={role && role.extraFields.length > 0 ? "06" : "05"}
+        n={next()}
         title="References"
-        subtitle="Two professional references covering the last 3 years. We won't contact them without your consent."
+        subtitle={
+          profile.referenceCount === 1
+            ? "One professional reference covering your most recent driving role. We won't contact them without your consent."
+            : profile.referenceCount === 3
+            ? "Three professional references covering the last 5 years. We won't contact them without your consent."
+            : "Two professional references covering the last 3 years. We won't contact them without your consent."
+        }
       />
       <div className="grid gap-5 md:grid-cols-2">
-        <Field label="Reference 1 — Name *" name="ref1_name" required />
-        <Field label="Reference 1 — Company *" name="ref1_company" required />
-        <Field label="Reference 1 — Job title *" name="ref1_title" required />
-        <Field label="Reference 1 — Email *" name="ref1_email" type="email" required />
-        <Field label="Reference 2 — Name *" name="ref2_name" required />
-        <Field label="Reference 2 — Company *" name="ref2_company" required />
-        <Field label="Reference 2 — Job title *" name="ref2_title" required />
-        <Field label="Reference 2 — Email *" name="ref2_email" type="email" required />
+        {Array.from({ length: profile.referenceCount }, (_, i) => i + 1).map(
+          (refN) => (
+            <React.Fragment key={refN}>
+              <Field label={`Reference ${refN} — Name *`} name={`ref${refN}_name`} required />
+              <Field label={`Reference ${refN} — Company *`} name={`ref${refN}_company`} required />
+              <Field label={`Reference ${refN} — Job title *`} name={`ref${refN}_title`} required />
+              <Field label={`Reference ${refN} — Email *`} name={`ref${refN}_email`} type="email" required />
+            </React.Fragment>
+          ),
+        )}
       </div>
 
-      {/* ─── Section 7 — CV + final ──────────────────────────────── */}
-      <SectionHeader
-        n={role && role.extraFields.length > 0 ? "07" : "06"}
-        title="CV & final details"
-      />
+      {/* ─── 07 — CV + final ──────────────────────────────────────── */}
+      <SectionHeader n={next()} title="CV & final details" />
       <div className="grid gap-5">
         <Field
-          label="Link to your CV *"
+          label={profile.cvRequired ? "Link to your CV *" : "Link to your CV"}
           name="cv_link"
-          required
+          required={profile.cvRequired}
           placeholder="Dropbox / Google Drive / OneDrive / LinkedIn URL"
-          help="Set sharing to anyone-with-the-link can view. We'll request the file directly if email is preferable."
+          help={profile.cvHelp}
         />
         <Select
           label="How did you hear about us?"
@@ -309,7 +527,7 @@ export function CareersApplicationForm({ role }: Props) {
           placeholder="Anything that doesn't fit above — accessibility needs, availability constraints, things you're proud of."
         />
 
-        {/* Declarations */}
+        {/* Declarations — conditionally include DVLA + DBS lines. */}
         <fieldset className="mt-2 rounded-2xl border border-kapture-fog/60 bg-kapture-paper/40 p-5 dark:border-kapture-ash dark:bg-kapture-ink/50">
           <legend className="px-2 font-mono text-xs uppercase tracking-wider text-kapture-mist">
             Declarations
@@ -319,14 +537,18 @@ export function CareersApplicationForm({ role }: Props) {
             required
             label="I confirm the information given is true and complete to the best of my knowledge. I understand any false statement may disqualify my application or lead to dismissal if employed."
           />
-          <Checkbox
-            name="declare_dvla_check"
-            label="I consent to Kapture Logistics carrying out a DVLA driving licence check (drivers only)."
-          />
-          <Checkbox
-            name="declare_dbs"
-            label="I consent to Kapture Logistics carrying out a basic DBS check where the role requires it."
-          />
+          {profile.showDvlaConsent && (
+            <Checkbox
+              name="declare_dvla_check"
+              label="I consent to Kapture Logistics carrying out a DVLA driving licence check at offer stage."
+            />
+          )}
+          {profile.showDbsConsent && (
+            <Checkbox
+              name="declare_dbs"
+              label="I consent to Kapture Logistics carrying out a basic DBS check at offer stage where the role requires it."
+            />
+          )}
           <Checkbox
             name="declare_data"
             required
@@ -364,7 +586,7 @@ export function CareersApplicationForm({ role }: Props) {
 }
 
 /* ──────────────────────────────────────────────────────────────────────
- * Field primitives — kept in this file so the form stays self-contained
+ * Field primitives
  * ─────────────────────────────────────────────────────────────────────*/
 
 function SectionHeader({
@@ -377,7 +599,7 @@ function SectionHeader({
   subtitle?: string;
 }) {
   return (
-    <div className="mt-10 mb-6 first:mt-0">
+    <div className="mt-10 mb-6">
       <div className="flex items-baseline gap-3">
         <span className="font-mono text-xs text-kapture-yellow">{n}</span>
         <h3 className="font-display text-xl font-bold tracking-tight text-kapture-black dark:text-kapture-white md:text-2xl">
@@ -501,8 +723,9 @@ function Checkbox({
 }
 
 /**
- * Renders a role-specific field driven by RoleField metadata in roles.ts.
- * Multiselect renders as a checkbox grid (cleanest UX for 4–10 options).
+ * Renders a role-specific field defined in roles.ts. Multiselect is a
+ * checkbox grid (cleanest UX for 4–10 options); textarea spans both
+ * columns. Other types map to the standard primitives above.
  */
 function DynamicField({ field }: { field: RoleField }) {
   const { name, label, type, required, placeholder, help, options } = field;
@@ -522,7 +745,10 @@ function DynamicField({ field }: { field: RoleField }) {
   if (type === "multiselect" && options) {
     return (
       <fieldset className="md:col-span-2">
-        <legend className="label">{label}{required ? " *" : ""}</legend>
+        <legend className="label">
+          {label}
+          {required ? " *" : ""}
+        </legend>
         <div className="mt-2 grid gap-2 rounded-2xl border bg-white p-4 dark:border-kapture-ash dark:bg-kapture-coal sm:grid-cols-2">
           {options.map((opt) => (
             <label
@@ -563,7 +789,7 @@ function DynamicField({ field }: { field: RoleField }) {
     return <Checkbox name={name} label={label} required={required} />;
   }
 
-  // Default — text / email / tel / number / date
+  // text / email / tel / number / date
   return (
     <Field
       label={label + (required ? " *" : "")}

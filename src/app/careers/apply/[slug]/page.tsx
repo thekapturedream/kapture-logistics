@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, MapPin, Banknote, Clock } from "lucide-react";
+import { ArrowLeft, MapPin, Banknote, Clock, type LucideIcon } from "lucide-react";
 import { PageHeader } from "@/components/PageHeader";
 import { CareersApplicationForm } from "@/components/CareersApplicationForm";
 import { getRole, getAllSlugs } from "@/lib/roles";
@@ -139,7 +139,7 @@ export default function ApplyPage({ params }: Props) {
 /* ────────────────────────────────────────────────────────────────────── */
 
 type StatProps = {
-  icon: React.ComponentType<{ size?: number; className?: string }>;
+  icon: LucideIcon;
   label: string;
   value: string;
 };

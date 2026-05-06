@@ -11,6 +11,7 @@ import {
   Sparkles,
   Briefcase,
   Heart,
+  type LucideIcon,
 } from "lucide-react";
 import { PageHeader } from "@/components/PageHeader";
 import { CTA } from "@/components/CTA";
@@ -201,7 +202,7 @@ export default function RolePage({ params }: Props) {
  * ─────────────────────────────────────────────────────────────────────*/
 
 type StatProps = {
-  icon: React.ComponentType<{ size?: number; className?: string }>;
+  icon: LucideIcon;
   label: string;
   value: string;
 };
@@ -223,7 +224,7 @@ function Stat({ icon: Icon, label, value }: StatProps) {
 }
 
 type BulletBlockProps = {
-  icon: React.ComponentType<{ size?: number; className?: string }>;
+  icon: LucideIcon;
   title: string;
   items: string[];
   muted?: boolean;
